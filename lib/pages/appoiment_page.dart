@@ -1,10 +1,8 @@
-// appointment_page.dart
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AppointmentPage extends StatelessWidget {
-   AppointmentPage({super.key});
-final List<Map<String, dynamic>> doctors = [
+  AppointmentPage({super.key});
+  final List<Map<String, dynamic>> doctors = [
     {
       'name': 'Dr. Donald Mathew',
       'specialty': 'Neurologist',
@@ -32,12 +30,6 @@ final List<Map<String, dynamic>> doctors = [
         child: AppBar(
           leading: Padding(
             padding: const EdgeInsets.only(top: 18),
-            child: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(Icons.arrow_back_ios),
-            ),
           ),
           backgroundColor: Colors.white,
           title: Padding(
@@ -62,7 +54,7 @@ final List<Map<String, dynamic>> doctors = [
             margin: EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(35),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -79,18 +71,15 @@ final List<Map<String, dynamic>> doctors = [
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        
-                        
-                        height: 104,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child:ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset('assets/Donex Fiance.webp'),
-                        )
-                      ),
+                          height: 104,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset('assets/Donex Fiance.webp'),
+                          )),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -154,7 +143,7 @@ final List<Map<String, dynamic>> doctors = [
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(100),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 12),
                           ),
@@ -169,7 +158,7 @@ final List<Map<String, dynamic>> doctors = [
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(100),
                             ),
                             padding: EdgeInsets.symmetric(vertical: 12),
                           ),

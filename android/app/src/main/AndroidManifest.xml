@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="cure_connect_service"
+        android:label="Cure Connect"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

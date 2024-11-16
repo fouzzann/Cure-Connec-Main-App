@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cure_connect_service/pages/category.dart';
-import 'package:cure_connect_service/pages/home_page/home_page.dart';
 import 'package:cure_connect_service/pages/top_rated_doctors.dart';
+import 'package:cure_connect_service/widgets/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
