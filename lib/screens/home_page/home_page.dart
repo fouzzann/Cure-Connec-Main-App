@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/pages/home_page/home_contend.dart';
+import 'package:cure_connect_service/screens/home_page/home_contend.dart';
 import 'package:flutter/material.dart';
 import '../appoiment_page.dart';
 import '../message_page.dart';

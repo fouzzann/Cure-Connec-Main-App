@@ -1,5 +1,5 @@
 import 'package:cure_connect_service/firebase_options.dart';
-import 'package:cure_connect_service/pages/splash_screen.dart';
+import 'package:cure_connect_service/screens/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
