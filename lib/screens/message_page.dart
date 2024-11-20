@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 class MessagePage extends StatelessWidget {
    MessagePage({super.key});
 
-  // Sample data for messages
+
   final List<Map<String, dynamic>> messages = [
     {
-      'userImage': 'assets/user1.jpg', // Add the path of your image asset
+      'userImage': 'assets/user1.jpg', 
       'userName': 'Dr. John',
       'message': 'Hello, I would like to schedule an appointment.',
     },
     {
-      'userImage': 'assets/user2.jpg', // Add the path of your image asset
+      'userImage': 'assets/user2.jpg', 
       'userName': 'Dr. Sarah',
       'message': 'Please send me your medical history.',
     },
     {
-      'userImage': 'assets/user3.jpg', // Add the path of your image asset
+      'userImage': 'assets/user3.jpg', 
       'userName': 'Dr. Michael',
       'message': 'Your appointment is confirmed for tomorrow.',
     },
     {
-      'userImage': 'assets/user4.jpg', // Add the path of your image asset
+      'userImage': 'assets/user4.jpg', 
       'userName': 'Dr. Emma',
       'message': 'Can you provide your availability next week?',
     },

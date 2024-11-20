@@ -12,37 +12,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isObscured = true;
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  // Email & Password Login
-  Future<UserCredential?> loginWithEmailAndPassword() async {
-    try {
-      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
-      );
-
-      if (userCredential.user != null) {
-        Get.to(() => HomePage()); 
-      }
-      return userCredential;
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
-  }
-
   // Google Login
   Future<UserCredential?> loginWithGoogle() async {
     try {
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        return null; // User cancelled the login
+        return null; 
       }
 
       final googleAuth = await googleUser.authentication;
@@ -63,141 +39,101 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  @override
+ @override
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
-        Get.to(() => HomePage());
+        Get.replace(() => HomePage());
       }
     });
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Hey Doctor',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Color(0xFF4A78FF),
+        leading: IconButton(
+          onPressed: () {
+            Get.back();
+          },
+          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+        ),
+      ),
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 80),
-              Container(
-                height: 360,
-                child: Image.asset('assets/login page.png'),
+      body: Stack(
+        children: [
+          Container(
+            height: 650,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Color(0xFF4A78FF),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+                bottomRight: Radius.circular(50),
               ),
-              Form(
-                key: _formKey,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment:
+                  CrossAxisAlignment.center, 
+              children: [
+                Image.asset(
+                  'assets/Screenshot_2024-11-20_120720-removebg-preview.png',
+                  height: 250,
+                  alignment: Alignment.center,
+                ),
+                SizedBox(height: 50), 
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    'Join our trusted network. Register your profile, manage appointments, and connect with patients.',
+                    textAlign: TextAlign.left, 
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 30,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Content
+          Column(
+            children: [
+              Expanded(
+                child: Container(),
+              ),
+              Container(
+                padding: EdgeInsets.only(bottom: 50),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Email field with validation
-                    Container(
-                      width: 400,
-                      child: TextFormField(
-                        controller: _emailController,
-                        validator: (value) {
-                          if (value == "") {
-                            return 'Please enter Email';
-                          } else {
-                            return null;
-                          }
-                        },
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23),
-                            borderSide:
-                                BorderSide(width: 2, color: Color(0xFF4A78FF)),
-                          ),
-                          hintText: 'Enter Email',
-                          prefixIcon: Icon(Icons.mail_outlined),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    // Password field with validation
-                    Container(
-                      width: 400,
-                      child: TextFormField(
-                        controller: _passwordController,
-                        validator: (value) {
-                          if (value == '') {
-                            return 'Please enter the Password';
-                          } else {
-                            return null;
-                          }
-                        },
-                        obscureText: _isObscured,
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23),
-                            borderSide:
-                                BorderSide(width: 2, color: Color(0xFF4A78FF)),
-                          ),
-                          prefixIcon: Icon(Icons.lock_outline_rounded),
-                          hintText: 'Enter Password',
-                          suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                _isObscured = !_isObscured;
-                              });
-                            },
-                            icon: Icon(_isObscured
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined),
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(23),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 30),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState?.validate() ?? false) {
-                          print('Form is valid. Proceed with Sign In');
-                          loginWithEmailAndPassword();
-                        } else {
-                          print('Form is not valid');
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF4A78FF),
-                      ),
-                      child: Text(
-                        'Sign In',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(height: 23),
                     Text(
-                      'Or continue with',
-                      style: TextStyle(color: Colors.grey),
+                      'continue with',
+                      style: TextStyle(color: Colors.black),
                     ),
-                    SizedBox(
-                      height: 35,
-                      child: Divider(
-                        indent: 23,
-                        endIndent: 23,
-                      ),
-                    ),
-
+                    SizedBox(height: 15),
                     GestureDetector(
                       onTap: () async {
-                        // Call Google login and wait for it to complete before navigating
                         await loginWithGoogle();
                       },
                       child: Container(
                         width: 250,
                         padding: EdgeInsets.symmetric(vertical: 10),
                         decoration: BoxDecoration(
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(23),
-                          border: Border.all(color: Colors.grey),
+                          border:
+                              Border.all(color: Colors.grey.withOpacity(0.3)),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Image.asset(
                               'assets/google.png',
@@ -210,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.black87,
                               ),
                             ),
                           ],
@@ -221,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

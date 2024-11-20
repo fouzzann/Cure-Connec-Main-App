@@ -1,4 +1,3 @@
-// profile_page.dart
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -37,7 +36,7 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 15),
                 const Text(
-                  'Donex fiance', // Replace 'User Name' with the actual user's name
+                  'Donex fiance',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -51,7 +50,7 @@ class ProfilePage extends StatelessWidget {
                      ) ],
                     ),Row(
                       children: [
-                      Icon(Icons.edit,color: Colors.white,size: 15,)
+                      Icon(Icons.edit,color: Colors.white,size: 15)
                       ],
                     )
                   ],
@@ -70,35 +69,35 @@ class ProfilePage extends StatelessWidget {
                   leading: const Icon(Icons.person, color: Color(0xFF4A78FF)),
                   title: const Text("Account"),
                   onTap: () {
-                    // Handle tap for "Account"
+                  
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.shield,color: Color(0xFF4A78FF)),
                   title: const Text("Privacy and Policy"),
                   onTap: () {
-                    // Handle tap for "Notifications"
+                    
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.padding_rounded, color: Color(0xFF4A78FF)),
                   title: const Text("Terms and Conditions"),
                   onTap: () {
-                    // Handle tap for "Settings"
+          
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.help, color: Color(0xFF4A78FF)),
                   title: const Text("Help & Support"),
                   onTap: () {
-                    // Handle tap for "Help & Support"
+                    
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
                   title: const Text("Logout",style: TextStyle(color: Colors.red),),
                   onTap: () {
-                    // Handle tap for "Logout"
+                
                   },
                 ),
                 Padding(
