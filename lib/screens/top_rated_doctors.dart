@@ -12,7 +12,9 @@ class TopRatedDoctors extends StatelessWidget {
       child: AppBar(
        leading: Padding(
        padding: const EdgeInsets.only(top:18),
-         child: IconButton(onPressed: (){Get.back();}, icon: Icon(Icons.arrow_back_ios)),
+         child: IconButton(onPressed: (){
+          Get.back();
+          }, icon: Icon(Icons.arrow_back_ios)),
        ),
         backgroundColor:  Colors.white, 
         title: Padding(

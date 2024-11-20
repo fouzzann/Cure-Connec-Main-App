@@ -193,7 +193,7 @@ class HomeContent extends StatelessWidget{
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: const Text(
-                            'See All>',
+                            'See All',
                             style: TextStyle(
                               color: Color(0xFF4A78FF),
                               fontSize: 13,
@@ -252,7 +252,7 @@ class HomeContent extends StatelessWidget{
                                       MaterialTapTargetSize.shrinkWrap,
                                 ),
                                 child: const Text(
-                                  'See All>',
+                                  'See All',
                                   style: TextStyle(
                                     color: Color(0xFF4A78FF),
                                     fontSize: 13,
