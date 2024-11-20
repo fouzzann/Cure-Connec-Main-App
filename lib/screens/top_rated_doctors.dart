@@ -17,7 +17,8 @@ class TopRatedDoctors extends StatelessWidget {
         backgroundColor:  Colors.white, 
         title: Padding(
           padding: const EdgeInsets.only(top:18),
-          child: Text('Top Rated Doctors',style: TextStyle(color:Colors.black,fontWeight: FontWeight.bold),),
+          child: Text('Top Rated Doctors',style: TextStyle(color:Colors.black,fontWeight: FontWeight.bold),
+          ),
         ),
         centerTitle: true,
       ),
