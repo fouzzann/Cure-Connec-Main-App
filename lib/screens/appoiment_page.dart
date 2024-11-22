@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppointmentPage extends StatelessWidget {
   AppointmentPage({super.key});
+  
   final List<Map<String, dynamic>> doctors = [
     {
       'name': 'Dr. Donald Mathew',
@@ -10,6 +11,7 @@ class AppointmentPage extends StatelessWidget {
       'time': '4:45 PM',
       'date': '7/03/2024',
       'rating': 4,
+      'status': 'Upcoming'
     },
     {
       'name': 'Dr. Fariz',
@@ -18,136 +20,168 @@ class AppointmentPage extends StatelessWidget {
       'time': '4:45 PM',
       'date': '7/03/2024',
       'rating': 5,
+      'status': 'Upcoming'
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: PreferredSize(
-        preferredSize: Size(0, 80),
-        child: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.only(top: 18),
-          ),
-          backgroundColor: Colors.white,
-          title: Padding(
-            padding: const EdgeInsets.only(top: 18),
-            child: Text(
-              'Appointment',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
+      backgroundColor: const Color(0xFFF8FAFC),
+      appBar: AppBar(
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade200),
             ),
+            child: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
-          centerTitle: true,
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text(
+          'My Appointments',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF1E293B),
+          ),
         ),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         itemCount: doctors.length,
         itemBuilder: (context, index) {
           final doctor = doctors[index];
           return Container(
-            margin: EdgeInsets.only(bottom: 16),
+            margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(35),
+              borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: Offset(0, 2),
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                          height: 104,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            borderRadius: BorderRadius.circular(20),
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            'assets/Donex Fiance.webp',
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.person,
+                                size: 40,
+                                color: Colors.grey,
+                              );
+                            },
                           ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset('assets/Donex Fiance.webp'),
-                          )),
+                        ),
+                      ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              doctor['name'],
+                              doctor['name'] ?? 'Unknown Doctor',
                               style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF1E293B),
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              '${doctor['specialty']} | ${doctor['hospital']}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Booked Time: ${doctor['time']}',
+                              doctor['specialty'] ?? 'Specialty not specified',
                               style: TextStyle(
+                                fontSize: 15,
                                 color: Colors.grey[600],
-                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                            Text(
-                              'Date: ${doctor['date']}',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 8),
                             Row(
-                              children: List.generate(
-                                5,
-                                (starIndex) => Icon(
-                                  starIndex < doctor['rating']
-                                      ? Icons.star
-                                      : Icons.star_border,
-                                  color: Colors.amber,
-                                  size: 16,
-                                ),
-                              ),
+                              children: [
+                                
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF8FAFC),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildInfoColumn(
+                          Icons.access_time_rounded,
+                          'Time',
+                          doctor['time'] ?? '--:--',
+                        ),
+                        const SizedBox(width: 24),
+                        _buildInfoColumn(
+                          Icons.calendar_today_rounded,
+                          'Date',
+                          doctor['date'] ?? '--/--/----',
+                        ),
+                        const SizedBox(width: 24),
+                        _buildInfoColumn(
+                          Icons.star_rounded,
+                          'Rating',
+                          '${doctor['rating'] ?? 0}.0',
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton(
+                        child: TextButton(
                           onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
+                              borderRadius: BorderRadius.circular(16),
+                              side: BorderSide(color: Colors.grey.shade300),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 12),
                           ),
-                          child: const Text('Cancel'),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -155,14 +189,20 @@ class AppointmentPage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
-                            foregroundColor: Colors.white,
+                            backgroundColor: const Color(0xFF0EA5E9),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            elevation: 0,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                            padding: EdgeInsets.symmetric(vertical: 12),
                           ),
-                          child: const Text('Message'),
+                          child: const Text(
+                            'Message',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -172,6 +212,38 @@ class AppointmentPage extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildInfoColumn(IconData icon, String label, String value) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: const Color(0xFF64748B),
+            size: 24,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Color(0xFF1E293B),
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

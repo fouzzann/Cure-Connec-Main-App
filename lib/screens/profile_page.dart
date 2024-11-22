@@ -6,113 +6,265 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5F5),
-      body: Column(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
-
-          Container(
-            height: 300,
-            width: 3000,
-            decoration: BoxDecoration(
-              color: const Color(0xFF4A78FF),
-              borderRadius: const BorderRadius.only(
-                bottomRight: Radius.circular(100),
-                bottomLeft: Radius.circular(100),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 90,
-                  backgroundColor: Colors.white,
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/Donex Fiance.webp',
-                      fit: BoxFit.cover,
-                      height: 190,
+          // Profile Section
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.1),
+                      spreadRadius: 10,
+                      blurRadius: 20,
                     ),
+                  ],
+                  image: const DecorationImage(
+                    image: AssetImage('assets/Donex Fiance.webp'),
+                    fit: BoxFit.cover,
                   ),
                 ),
-                const SizedBox(height: 15),
-                const Text(
-                  'Donex fiance',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),Row(mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              const SizedBox(width: 24),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        TextButton(onPressed: (){},child: Text( 'Edit',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
-                     ) ],
-                    ),Row(
-                      children: [
-                      Icon(Icons.edit,color: Colors.white,size: 15)
-                      ],
-                    )
+                    const Text(
+                      'Donex Finance',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.verified,
+                            size: 14,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'Verified Profile',
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
 
-          // List section
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.person, color: Color(0xFF4A78FF)),
-                  title: const Text("Account"),
-                  onTap: () {
-                  
-                  },
+          // Edit Profile Button
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                ListTile(
-                  leading: const Icon(Icons.shield,color: Color(0xFF4A78FF)),
-                  title: const Text("Privacy and Policy"),
-                  onTap: () {
-                    
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.padding_rounded, color: Color(0xFF4A78FF)),
-                  title: const Text("Terms and Conditions"),
-                  onTap: () {
-          
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.help, color: Color(0xFF4A78FF)),
-                  title: const Text("Help & Support"),
-                  onTap: () {
-                    
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text("Logout",style: TextStyle(color: Colors.red),),
-                  onTap: () {
-                
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 90),
-                  child: Column(
-                    children: [
-                      Text('Version 1.0.0',
-                      style: TextStyle(fontSize: 17,color: Colors.grey),),
-                    ],
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.edit, size: 20),
+                  SizedBox(width: 8),
+                  Text(
+                    'Edit Profile',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
           ),
           
+          const SizedBox(height: 40),
+
+          // Settings Section
+          const Text(
+            'Settings',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          
+          _buildSettingsItem(
+            icon: Icons.person,
+            title: 'Account',
+            subtitle: 'Personal information',
+            iconBgColor: Colors.blue.withOpacity(0.1),
+            iconColor: Colors.blue,
+          ),
+          _buildSettingsItem(
+            icon: Icons.shield_outlined,
+            title: 'Privacy and Security',
+            subtitle: 'Passwords, 2FA, Privacy',
+            iconBgColor: Colors.green.withOpacity(0.1),
+            iconColor: Colors.green,
+          ),
+          _buildSettingsItem(
+            icon: Icons.help_outline,
+            title: 'Help & Support',
+            subtitle: 'FAQ, Contact Us',
+            iconBgColor: Colors.purple.withOpacity(0.1),
+            iconColor: Colors.purple,
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Logout Button
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.withOpacity(0.1),
+                foregroundColor: Colors.red,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.logout),
+                  SizedBox(width: 8),
+                  Text(
+                    'Log Out',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 16),
+          Center(
+            child: Text(
+              'Version 1.0.0',
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 12,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingsItem({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color iconBgColor,
+    required Color iconColor,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.grey[200]!,
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Icon(
+              icon,
+              color: iconColor,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.grey[400],
+            size: 16,
+          ),
         ],
       ),
     );

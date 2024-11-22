@@ -4,161 +4,202 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class LoginPage extends StatelessWidget {
+  LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+  // Controller for auth state
+  final RxBool _isLoading = false.obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // Google Login
-  Future<UserCredential?> loginWithGoogle() async {
+
+  // Modernized Google login with better error handling
+  Future<void> loginWithGoogle() async {
     try {
+      _isLoading.value = true;
+      
       final googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        return null; 
+        Get.snackbar(
+          'Sign In Cancelled',
+          'Google sign in was cancelled',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.1),
+          colorText: Colors.red,
+        );
+        return;
       }
 
       final googleAuth = await googleUser.authentication;
-      final cred = GoogleAuthProvider.credential(
+      final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential = await _auth.signInWithCredential(cred);
+      final userCredential = await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        Get.to(() => HomePage());
+        Get.offAll(() => HomePage());
       }
-      return userCredential;
     } catch (e) {
-      print(e.toString());
-      return null;
+      Get.snackbar(
+        'Error',
+        'Failed to sign in with Google: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+    } finally {
+      _isLoading.value = false;
     }
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user != null) {
-        Get.replace(() => HomePage());
-      }
+    // Listen to auth state changes
+    ever(_isLoading, (_) {
+      FirebaseAuth.instance.authStateChanges().listen((User? user) {
+        if (user != null) {
+          Get.offAll(() => HomePage());
+        }
+      });
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Hey Doctor',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xFF4A78FF),
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-        ),
-      ),
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Container(
-            height: 650,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Color(0xFF4A78FF),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(50),
-                bottomRight: Radius.circular(50),
-              ),
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF4A78FF),
+                Color(0xFF4A78FF).withOpacity(0.8),
+                Colors.white,
+              ],
             ),
+          ),
+          child: SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment:
-                  CrossAxisAlignment.center, 
               children: [
-                Image.asset(
-                  'assets/Screenshot_2024-11-20_120720-removebg-preview.png',
-                  height: 250,
-                  alignment: Alignment.center,
-                ),
-                SizedBox(height: 50), 
+                // App Bar
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    "Join our trusted network. Book appointments, connect with top doctors, and manage your health with ease.",
-                    textAlign: TextAlign.left, 
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900,
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                      ),
+                      Expanded(
+                        child: Text(
+                          'Hey Doctor',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(width: 48), // Balance the back button
+                    ],
+                  ),
+                ),
+
+                // Hero Image
+                Expanded(
+                  flex: 2,
+                  child: Hero(
+                    tag: 'login_image',
+                    child: Image.asset(
+                      'assets/Screenshot_2024-11-20_120720-removebg-preview.png',
+                      fit: BoxFit.contain,
                     ),
+                  ),
+                ),
+
+                // Welcome Text
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      "Join our trusted network. Book appointments, connect with top doctors, and manage your health with ease.",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        height: 1.3,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+
+                // Login Section
+                Container(
+                  padding: EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Get Started',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      Obx(() => ElevatedButton(
+                        onPressed: _isLoading.value ? null : loginWithGoogle,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black87,
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(color: Colors.grey.withOpacity(0.3)),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: _isLoading.value
+                          ? CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4A78FF)),
+                            )
+                          : Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/google.png',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Continue with Google',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                      )),
+                      SizedBox(height: 16),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
-          // Content
-          Column(
-            children: [
-              Expanded(
-                child: Container(),
-              ),
-              Container(
-                padding: EdgeInsets.only(bottom: 50),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'continue with',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    SizedBox(height: 15),
-                    GestureDetector(
-                      onTap: () async {
-                        await loginWithGoogle();
-                      },
-                      child: Container(
-                        width: 250,
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(23),
-                          border:
-                              Border.all(color: Colors.grey.withOpacity(0.3)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/google.png',
-                              width: 24,
-                              height: 24,
-                            ),
-                            SizedBox(width: 10),
-                            Text(
-                              'Sign In with Google',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
