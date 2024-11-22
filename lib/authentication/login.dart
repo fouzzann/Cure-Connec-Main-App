@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Text(
-                    'Join our trusted network. Register your profile, manage appointments, and connect with patients.',
+                    "Join our trusted network. Book appointments, connect with top doctors, and manage your health with ease.",
                     textAlign: TextAlign.left, 
                     style: TextStyle(
                       color: Colors.white,

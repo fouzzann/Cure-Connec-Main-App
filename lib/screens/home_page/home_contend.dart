@@ -1,6 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cure_connect_service/screens/category.dart';
 import 'package:cure_connect_service/screens/top_rated_doctors.dart';
+import 'package:cure_connect_service/screens/utils/category_designs.dart';
+import 'package:cure_connect_service/screens/utils/colors.dart';
+import 'package:cure_connect_service/screens/utils/top_rated_dr.dart';
 import 'package:cure_connect_service/widgets/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,65 +11,6 @@ import 'package:get/get.dart';
 class HomeContent extends StatelessWidget{
   HomeContent({super.key});
 
-  final List<String> categoryTitles = [
-    'Physiotherapist',
-    'Dentist',
-    'Ophthalmologist',
-    'Neurologist',
-    'Pediatrician',
-    'Nephrologist',
-  ];
-
-  final List<String> categorysImages = [
-    'assets/physiotherapist.png',
-    'assets/teeth (2).png',
-    'assets/advertising.png',
-    'assets/brainstorm.png',
-    'assets/baby-boy.png',
-    'assets/kidneys.png',
-  ];
-
-  final List<Color> categoryTextColors = [
-    const Color.fromARGB(255, 20, 116, 24),
-    const Color.fromARGB(255, 192, 47, 37),
-    const Color(0xFF6082CC),
-    const Color(0xFFA820AB),
-    const Color(0xFFDEA200),
-    Colors.black.withOpacity(0.8),
-  ];
-
-  final List<Color> categoryColors = [
-    Colors.green.withOpacity(0.15),
-    Colors.red.withOpacity(0.15),
-    Colors.blue.withOpacity(0.12),
-    Colors.purple.withOpacity(0.12),
-    Colors.orange.withOpacity(0.12),
-    Colors.black.withOpacity(0.12),
-  ];
-
-  final List<Map<String, dynamic>> doctors = [
-    {
-      'name': 'Dr. Alex',
-      'specialty': 'Physiotherapist',
-      'imageUrl':
-          'https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg',
-      'rating': 4.0,
-    },
-    {
-      'name': 'Dr. Sarah',
-      'specialty': 'Cardiologist',
-      'imageUrl':
-          'https://img.freepik.com/free-photo/beautiful-young-female-doctor-looking-camera-office_1301-7807.jpg',
-      'rating': 5.0,
-    },
-    {
-      'name': 'Dr. John',
-      'specialty': 'Neurologist',
-      'imageUrl':
-          'https://media.istockphoto.com/id/1390000431/photo/shot-of-a-mature-doctor-using-a-digital-tablet-in-a-modern-hospital.jpg?s=612x612&w=0&k=20&c=ofnikeDwvLhhEvLpSuQME5kWclGchqUKSHQFdQ4mcWo=',
-      'rating': 4.5,
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
