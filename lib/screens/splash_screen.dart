@@ -1,5 +1,7 @@
 
+import 'package:cure_connect_service/screens/home_page/home_page.dart';
 import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,14 +15,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration(seconds: 3), () {
-      Get.to(WelcomePage());
+      if(_auth.currentUser!=null){
+        Get.offAll(()=>HomePage());
+      }
+     else{
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx)=> WelcomePage()));
+     }
+  
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

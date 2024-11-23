@@ -1,4 +1,8 @@
+import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -155,6 +159,13 @@ class ProfilePage extends StatelessWidget {
             iconBgColor: Colors.purple.withOpacity(0.1),
             iconColor: Colors.purple,
           ),
+          _buildSettingsItem(
+            icon: Icons.feedback_outlined,
+            title: 'Send Feedback',
+            subtitle: 'Help us improve our app',
+            iconBgColor: Colors.orange.withOpacity(0.1),
+            iconColor: Colors.orange,
+          ),
           
           const SizedBox(height: 24),
           
@@ -162,7 +173,11 @@ class ProfilePage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async{
+                await FirebaseAuth.instance.signOut();
+                await GoogleSignIn().signOut();
+                Get.offAll(WelcomePage());
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.withOpacity(0.1),
                 foregroundColor: Colors.red,
