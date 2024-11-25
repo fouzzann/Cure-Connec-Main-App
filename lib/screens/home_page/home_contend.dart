@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cure_connect_service/screens/category.dart';
+import 'package:cure_connect_service/widgets/category.dart';
 import 'package:cure_connect_service/screens/top_rated_doctors.dart';
-import 'package:cure_connect_service/screens/utils/category_designs.dart';
+import 'package:cure_connect_service/widgets/category_designs.dart';
 import 'package:cure_connect_service/screens/utils/colors.dart';
 import 'package:cure_connect_service/screens/utils/top_rated_dr.dart';
 import 'package:cure_connect_service/widgets/dr_card.dart';

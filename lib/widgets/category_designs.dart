@@ -8,10 +8,10 @@ final List<String> categoryTitles = [
   ];
 
   final List<String> categorysImages = [
-    'assets/physiotherapist.png',
-    'assets/teeth (2).png',
-    'assets/advertising.png',
-    'assets/brainstorm.png',
-    'assets/baby-boy.png',
-    'assets/kidneys.png',
+    'assets/healthcare.png',
+    'assets/tooth.png',
+    'assets/eye-open.png',
+    'assets/brainstorm (1).png',
+    'assets/baby-boy (1).png',
+    'assets/kidney.png',
   ];
