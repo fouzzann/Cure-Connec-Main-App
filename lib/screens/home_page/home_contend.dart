@@ -11,7 +11,6 @@ import 'package:get/get.dart';
 class HomeContent extends StatelessWidget{
   HomeContent({super.key});
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

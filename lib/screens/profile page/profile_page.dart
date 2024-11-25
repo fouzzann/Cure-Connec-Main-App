@@ -1,3 +1,4 @@
+import 'package:cure_connect_service/screens/profile%20page/privecy_and_policy.dart';
 import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -145,12 +146,16 @@ class ProfilePage extends StatelessWidget {
             iconBgColor: Colors.blue.withOpacity(0.1),
             iconColor: Colors.blue,
           ),
-          _buildSettingsItem(
-            icon: Icons.shield_outlined,
-            title: 'Privacy and Security',
-            subtitle: 'Passwords, 2FA, Privacy',
-            iconBgColor: Colors.green.withOpacity(0.1),
-            iconColor: Colors.green,
+          GestureDetector(onTap: (){
+            Get.to(()=>PrivacyPolicyPage());
+          },
+            child: _buildSettingsItem(
+              icon: Icons.shield_outlined,
+              title: 'Privacy and Policy',
+              subtitle: '2FA, Privacy',
+              iconBgColor: Colors.green.withOpacity(0.1),
+              iconColor: Colors.green,
+            ),
           ),
           _buildSettingsItem(
             icon: Icons.help_outline,
