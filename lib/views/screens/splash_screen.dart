@@ -1,5 +1,5 @@
 import 'package:cure_connect_service/views/screens/home_page/home_page.dart';
-import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
+import 'package:cure_connect_service/views/screens/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,5 +1,5 @@
+import 'package:cure_connect_service/authentication/login.dart';
 import 'package:cure_connect_service/views/screens/profile%20page/privecy_and_policy.dart';
-import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -126,7 +126,7 @@ class ProfilePage extends StatelessWidget {
           //     ),
           //   ),
           // ),
-          
+
           const SizedBox(height: 40),
 
           // Settings Section
@@ -138,7 +138,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           _buildSettingsItem(
             icon: Icons.person,
             title: 'Account',
@@ -146,9 +146,10 @@ class ProfilePage extends StatelessWidget {
             iconBgColor: Colors.blue.withOpacity(0.1),
             iconColor: Colors.blue,
           ),
-          GestureDetector(onTap: (){
-            Get.to(()=>PrivacyPolicyPage());
-          },
+          GestureDetector(
+            onTap: () {
+              Get.to(() => PrivacyPolicyPage());
+            },
             child: _buildSettingsItem(
               icon: Icons.shield_outlined,
               title: 'Privacy and Policy',
@@ -171,17 +172,53 @@ class ProfilePage extends StatelessWidget {
             iconBgColor: Colors.orange.withOpacity(0.1),
             iconColor: Colors.orange,
           ),
-          
+
           const SizedBox(height: 24),
-          
+
           // Logout Button
           Container(
             margin: const EdgeInsets.symmetric(vertical: 16),
             child: ElevatedButton(
-              onPressed: () async{
-                await FirebaseAuth.instance.signOut();
-                await GoogleSignIn().signOut();
-                Get.offAll(WelcomePage());
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.white,
+                        title: Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: Color(0xFF4A78FF),
+                          ),
+                        ),
+                        content: Text(
+                            'Are you sure you want to logout from Cure Connect'),
+                        actions: [
+                          TextButton(
+                              onPressed: () {
+                                Get.back();
+                              },
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: Color(0xFF4A78FF),
+                                ),
+                              )),
+                          TextButton(
+                              onPressed: () async {
+                                await FirebaseAuth.instance.signOut();
+                                await GoogleSignIn().signOut();
+                                Get.offAll(()=>LoginPage(),
+                                transition: Transition.downToUp
+                                );
+                              },
+                              child: Text(
+                                'Confirm',
+                                style: TextStyle(color: Colors.red),
+                              ))
+                        ],
+                      );
+                    });
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red.withOpacity(0.1),

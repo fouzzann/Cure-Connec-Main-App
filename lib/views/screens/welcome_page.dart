@@ -2,6 +2,7 @@ import 'package:cure_connect_service/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
@@ -17,19 +18,22 @@ class _WelcomePageState extends State<WelcomePage> {
     WelcomeContent(
       imagePath: 'assets/welcome_page-removebg-preview.png',
       title: 'Welcome to Your Health Companion',
-      description: 'Easily find and book appointments with trusted doctors near you. Your health, now just a few taps away.',
+      description:
+          'Easily find and book appointments with trusted doctors near you. Your health, now just a few taps away.',
       backgroundColor: Color(0xFFECFDF5),
     ),
     WelcomeContent(
       imagePath: 'assets/welcome_page_2_-removebg-preview.png',
       title: 'Expert Care, Anytime, Anywhere',
-      description: 'Access a network of top doctors and specialists, ready to provide the care you need, when you need it.',
+      description:
+          'Access a network of top doctors and specialists, ready to provide the care you need, when you need it.',
       backgroundColor: Color(0xFFEEF2FF),
     ),
     WelcomeContent(
       imagePath: 'assets/welcome_page_3-removebg-preview.png',
       title: 'Book with Confidence',
-      description: 'Seamlessly manage your health journey from booking appointments to follow-ups. Reliable, secure, and easy.',
+      description:
+          'Seamlessly manage your health journey from booking appointments to follow-ups. Reliable, secure, and easy.',
       backgroundColor: Color(0xFFF0FDFF),
     ),
   ];
@@ -39,7 +43,6 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          
           PageView.builder(
             controller: _pageController,
             onPageChanged: (index) {
@@ -50,8 +53,6 @@ class _WelcomePageState extends State<WelcomePage> {
               return _buildPage(welcomeContent[index]);
             },
           ),
-
-          
           Positioned(
             top: MediaQuery.of(context).padding.top + 16,
             right: 16,
@@ -67,7 +68,9 @@ class _WelcomePageState extends State<WelcomePage> {
                 ],
               ),
               child: TextButton(
-                onPressed: () => Get.to(() => LoginPage()),
+                onPressed: () => Get.to(
+                  () => LoginPage(),
+                ),
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
@@ -81,7 +84,6 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
             ),
           ),
-
           Positioned(
             bottom: 0,
             left: 0,
@@ -102,7 +104,6 @@ class _WelcomePageState extends State<WelcomePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
@@ -121,8 +122,6 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                   ),
                   SizedBox(height: 32),
-                  
-    
                   SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -134,7 +133,9 @@ class _WelcomePageState extends State<WelcomePage> {
                             curve: Curves.easeOut,
                           );
                         } else {
-                          Get.to(() => LoginPage());
+                          Get.to(
+                            () => LoginPage(),
+                          );
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -176,7 +177,6 @@ class _WelcomePageState extends State<WelcomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              
                   Container(
                     height: 320,
                     margin: EdgeInsets.symmetric(horizontal: 24),
@@ -188,8 +188,6 @@ class _WelcomePageState extends State<WelcomePage> {
                     ),
                   ),
                   SizedBox(height: 48),
-                  
-                 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 32),
                     child: Column(

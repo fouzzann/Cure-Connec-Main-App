@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/views/screens/utils/category_widget_colors.dart';
+import 'package:cure_connect_service/views/utils/category_widget_colors.dart';
 import 'package:cure_connect_service/widgets/category_designs.dart';
 import 'package:flutter/material.dart';
 

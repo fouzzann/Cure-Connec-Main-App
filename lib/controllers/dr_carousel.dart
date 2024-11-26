@@ -1,5 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cure_connect_service/views/screens/utils/top_rated_dr_data.dart';
+import 'package:cure_connect_service/views/utils/top_rated_dr_data.dart';
 import 'package:cure_connect_service/widgets/dr_card.dart';
 import 'package:flutter/material.dart';
 
