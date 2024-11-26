@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/screens/profile%20page/privecy_and_policy.dart';
+import 'package:cure_connect_service/views/screens/profile%20page/privecy_and_policy.dart';
 import 'package:cure_connect_service/welcome%20page/welcome_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
