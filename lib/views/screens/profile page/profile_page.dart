@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:url_launcher/url_launcher.dart';  // Import the url_launcher package
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -95,38 +96,6 @@ class ProfilePage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 40),
-
-          // Edit Profile Button
-          // Container(
-          //   padding: const EdgeInsets.symmetric(horizontal: 16),
-          //   child: ElevatedButton(
-          //     onPressed: () {},
-          //     style: ElevatedButton.styleFrom(
-          //       backgroundColor: Colors.blue,
-          //       foregroundColor: Colors.white,
-          //       elevation: 0,
-          //       padding: const EdgeInsets.symmetric(vertical: 16),
-          //       shape: RoundedRectangleBorder(
-          //         borderRadius: BorderRadius.circular(16),
-          //       ),
-          //     ),
-          //     child: const Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Icon(Icons.edit, size: 20),
-          //         SizedBox(width: 8),
-          //         Text(
-          //           'Edit Profile',
-          //           style: TextStyle(
-          //             fontSize: 16,
-          //             fontWeight: FontWeight.w600,
-          //           ),
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
-
           const SizedBox(height: 40),
 
           // Settings Section
@@ -158,12 +127,34 @@ class ProfilePage extends StatelessWidget {
               iconColor: Colors.green,
             ),
           ),
-          _buildSettingsItem(
-            icon: Icons.help_outline,
-            title: 'Help & Support',
-            subtitle: 'FAQ, Contact Us',
-            iconBgColor: Colors.purple.withOpacity(0.1),
-            iconColor: Colors.purple,
+          GestureDetector(
+            onTap: () async {
+              final Uri emailUri = Uri(
+                scheme: 'mailto',
+                path: 'fouzanp.official@gmail.com', // Replace with your email
+                queryParameters: {
+                  'subject': 'Help & Support Inquiry', // Optional: pre-fill subject
+                  'body': 'Please describe your issue here...', // Optional: pre-fill body
+                },
+              );
+
+              // Launch the email client
+              if (await canLaunchUrl(emailUri)) {
+                await launchUrl(emailUri);
+              } else {
+                // Handle error if the email client cannot be opened
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Could not open email client. Please check if an email client is set up.')),
+                );
+              }
+            },
+            child: _buildSettingsItem(
+              icon: Icons.help_outline,
+              title: 'Help & Support',
+              subtitle: 'FAQ, Contact Us',
+              iconBgColor: Colors.purple.withOpacity(0.1),
+              iconColor: Colors.purple,
+            ),
           ),
           _buildSettingsItem(
             icon: Icons.feedback_outlined,
@@ -208,9 +199,8 @@ class ProfilePage extends StatelessWidget {
                               onPressed: () async {
                                 await FirebaseAuth.instance.signOut();
                                 await GoogleSignIn().signOut();
-                                Get.offAll(()=>LoginPage(),
-                                transition: Transition.downToUp
-                                );
+                                Get.offAll(() => LoginPage(),
+                                    transition: Transition.downToUp);
                               },
                               child: Text(
                                 'Confirm',

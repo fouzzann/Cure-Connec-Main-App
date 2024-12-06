@@ -2,7 +2,6 @@ import 'package:cure_connect_service/authentication/login.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
 class WelcomePage extends StatefulWidget {
   const WelcomePage({Key? key}) : super(key: key);
 
@@ -14,7 +13,7 @@ class _WelcomePageState extends State<WelcomePage> {
   final PageController _pageController = PageController();
   int currentIndex = 0;
 
-  final List<WelcomeContent> welcomeContent = [
+   List<WelcomeContent> welcomeContent = [
     WelcomeContent(
       imagePath: 'assets/welcome_page-removebg-preview.png',
       title: 'Welcome to Your Health Companion',
@@ -228,7 +227,7 @@ class _WelcomePageState extends State<WelcomePage> {
   }
 }
 
-class WelcomeContent {
+ class WelcomeContent {
   final String imagePath;
   final String title;
   final String description;

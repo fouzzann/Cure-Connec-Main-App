@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:get/get.dart';
 
-// Separate controller for better state management
 class LoginController extends GetxController {
   final RxBool isLoading = false.obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -16,7 +15,7 @@ class LoginController extends GetxController {
       
       final googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        _showError('Sign In Cancelled', 'Google sign in was cancelled');
+        _showNotification('Sign In Cancelled', 'Google sign in was cancelled', isError: true);
         return;
       }
 
@@ -29,25 +28,34 @@ class LoginController extends GetxController {
       final userCredential = await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        Get.offAll(() => HomePage());
+        _showNotification('Success', 'Welcome back!', isError: false);
+        Get.offAll(() => HomePage(), transition: Transition.fadeIn);
       }
     } catch (e) {
-      _showError('Error', 'Failed to sign in with Google: ${e.toString()}');
+      _showNotification('Error', 'Failed to sign in with Google', isError: true);
     } finally {
       isLoading.value = false;
     }
   }
 
-  void _showError(String title, String message) {
+  void _showNotification(String title, String message, {required bool isError}) {
     Get.snackbar(
       title,
       message,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red.withOpacity(0.1),
-      colorText: Colors.red,
-      duration: const Duration(seconds: 3),
-      borderRadius: 10,
-      margin: const EdgeInsets.all(10),
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: isError ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
+      colorText: isError ? Colors.red : Colors.green,
+      duration: const Duration(seconds: 2),
+      borderRadius: 12,
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      animationDuration: const Duration(milliseconds: 500),
+      backgroundGradient: LinearGradient(
+        colors: isError 
+          ? [Colors.red.withOpacity(0.05), Colors.red.withOpacity(0.1)]
+          : [Colors.green.withOpacity(0.05), Colors.green.withOpacity(0.1)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
     );
   }
 
@@ -60,7 +68,7 @@ class LoginController extends GetxController {
   void _setupAuthListener() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
-        Get.offAll(() => HomePage());
+        Get.offAll(() => HomePage(), transition: Transition.fadeIn);
       }
     });
   }
@@ -70,51 +78,44 @@ class LoginPage extends GetView<LoginController> {
   LoginPage({super.key});
 
   static const Color primaryColor = Color(0xFF4A78FF);
+  static const Color secondaryColor = Color(0xFF6C63FF);
 
   @override
   Widget build(BuildContext context) {
-    // Initialize controller
     Get.put(LoginController());
-
     return Scaffold(
-      body: Stack(
-        children: [
-          _buildBackground(),
-          SafeArea(
-            child: CustomScrollView(
-              slivers: [
-                _buildAppBar(),
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: Column(
-                    children: [
-                      _buildHeroImage(),
-                      _buildWelcomeText(),
-                      const Spacer(),
-                      _buildLoginSection(),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 500),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.bottomLeft,
+            colors: [
+              primaryColor,
+              secondaryColor,
+              Colors.white,
+            ],
+            stops: const [0.0, 0.4, 0.9],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBackground() {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            primaryColor,
-            primaryColor.withOpacity(0.8),
-            Colors.white,
-          ],
-          stops: const [0.0, 0.5, 0.9],
+        ),
+        child: SafeArea(
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              _buildAppBar(),
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Column(
+                  children: [
+                    _buildHeroImage(),
+                    _buildWelcomeText(),
+                    const Spacer(),
+                    _buildLoginCard(),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -125,15 +126,23 @@ class LoginPage extends GetView<LoginController> {
       backgroundColor: Colors.transparent,
       elevation: 0,
       leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+        ),
         onPressed: () => Get.back(),
       ),
       title: const Text(
         'Hey Doctor',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+          fontSize: 28,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.5,
         ),
       ),
       centerTitle: true,
@@ -148,9 +157,18 @@ class LoginPage extends GetView<LoginController> {
         tag: 'login_image',
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Image.asset(
-            'assets/Screenshot_2024-11-20_120720-removebg-preview.png',
-            fit: BoxFit.contain,
+          child: ShaderMask(
+            shaderCallback: (Rect bounds) {
+              return LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.white, Colors.white.withOpacity(0.8)],
+              ).createShader(bounds);
+            },
+            child: Image.asset(
+              'assets/Screenshot_2024-11-20_120720-removebg-preview.png',
+              fit: BoxFit.contain,
+            ),
           ),
         ),
       ),
@@ -158,35 +176,47 @@ class LoginPage extends GetView<LoginController> {
   }
 
   Widget _buildWelcomeText() {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-      child: const Text(
-        "Join our trusted network. Book appointments, connect with top doctors, and manage your health with ease.",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.w700,
-          height: 1.3,
-        ),
-        textAlign: TextAlign.center,
+      child: Column(
+        children: [
+          Text(
+            "Welcome to Healthcare",
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.9),
+              fontSize: 32,
+              fontWeight: FontWeight.w800,
+              height: 1.2,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Join our trusted network. Connect with top doctors and manage your health journey.",
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildLoginSection() {
+  Widget _buildLoginCard() {
     return Container(
+      margin: const EdgeInsets.all(24),
       padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 10,
-            offset: Offset(0, -5),
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
           ),
         ],
       ),
@@ -197,13 +227,22 @@ class LoginPage extends GetView<LoginController> {
             'Get Started',
             style: TextStyle(
               fontSize: 24,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
               color: Colors.black87,
+              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(height: 24),
           _buildGoogleButton(),
           const SizedBox(height: 16),
+          Text(
+            'By continuing, you agree to our Terms of Service',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
         ],
       ),
     );
@@ -211,52 +250,65 @@ class LoginPage extends GetView<LoginController> {
 
   Widget _buildGoogleButton() {
     return Obx(() {
-      return AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
+      return Container(
         width: double.infinity,
         height: 56,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: ElevatedButton(
           onPressed: controller.isLoading.value ? null : controller.loginWithGoogle,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.white,
             foregroundColor: Colors.black87,
-            elevation: controller.isLoading.value ? 0 : 2,
+            elevation: controller.isLoading.value ? 0 : 1,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
               side: BorderSide(
-                color: Colors.grey.withOpacity(0.3),
+                color: Colors.grey.withOpacity(0.2),
                 width: 1,
               ),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 24),
           ),
-          child: controller.isLoading.value
-              ? const SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                    strokeWidth: 2,
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/google.png',
-                      width: 24,
-                      height: 24,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: controller.isLoading.value
+                ? const SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                      strokeWidth: 2,
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Continue with Google',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/google.png',
+                        width: 24,
+                        height: 24,
                       ),
-                    ),
-                  ],
-                ),
+                      const SizedBox(width: 12),
+                      const Text(
+                        'Continue with Google',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+          ),
         ),
       );
     });
