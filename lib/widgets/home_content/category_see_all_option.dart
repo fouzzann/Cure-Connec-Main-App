@@ -9,7 +9,8 @@ class CategorySeeAllOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        Get.to(() => CategoryPage());
+        Get.to(() => CategoryPage(),
+        transition: Transition.rightToLeft);
       },
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),

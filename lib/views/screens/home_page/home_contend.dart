@@ -31,61 +31,64 @@ class HomeContent extends StatelessWidget {
                 const SizedBox(height: 24),
               AppBarSearchBar()
               ],
-            ),
+            ), 
           ),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+          Expanded( 
+            child: SingleChildScrollView(
+              child: Container(
+                height:650,   
+                decoration: const BoxDecoration(
+                  color: Color(0xFFF5F5F5),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 55, left: 34, right: 34),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Top rated Doctors',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        TopRatedDrSeeallOption()
-                      ],
-                    ),
-                    SizedBox(height: 30),
-                    DrCarousel(),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 34, right: 34),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Category's",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              CategorySeeAllOption()
-                            ],
+                          Text(
+                            'Top rated Doctors',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
                           ),
-                          SizedBox(height: 30),
-                          CategoryGrid()
+                          TopRatedDrSeeallOption()
                         ],
                       ),
-                    ),
-                  ],
+                      SizedBox(height: 30),
+                      DrCarousel(),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Category's",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                CategorySeeAllOption()
+                              ],
+                            ),
+                            SizedBox(height: 30),
+                            CategoryGrid()
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

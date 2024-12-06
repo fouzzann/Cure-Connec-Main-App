@@ -244,10 +244,10 @@ class _CategoryPageState extends State<CategoryPage> {
                     ],
                   ),
                   Text(
-                    '${data['category']} | ${data['hospitalName']}',
+                    '${data['category']} | ${data['hospitalName']} Hospital',
                     style: TextStyle(
                       color: Colors.grey[600],
-                      fontSize: 13,
+                      fontSize: 13,   
                     ),
                   ),
                   Text(
