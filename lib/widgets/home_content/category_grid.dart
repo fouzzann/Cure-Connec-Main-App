@@ -9,15 +9,11 @@ import 'package:cure_connect_service/widgets/category_designs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-
-
 class CategoryGrid extends StatelessWidget {
   const CategoryGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
     final List<Widget> categoryPages = [
       Physiotherapist(),
       Dentist(),
@@ -38,14 +34,12 @@ class CategoryGrid extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         return GestureDetector(
-          onTap: () { 
-          Get.to(()=>categoryPages[index % categoryPages.length],
-         transition: Transition.size 
-         ); 
-         
+          onTap: () {
+            Get.to(() => categoryPages[index % categoryPages.length],
+                transition: Transition.size);
           },
           child: Container(
-            padding: const EdgeInsets.all(8), 
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: categoryColors[index % categoryColors.length],
               borderRadius: BorderRadius.circular(10),
@@ -72,7 +66,8 @@ class CategoryGrid extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 11,
-                    color: categoryTextColors[index % categoryTextColors.length],
+                    color:
+                        categoryTextColors[index % categoryTextColors.length],
                   ),
                 ),
               ],
