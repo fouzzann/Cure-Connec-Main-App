@@ -306,7 +306,7 @@ class _CategoryPageState extends State<CategoryPage> {
               right: 10,
               child: ElevatedButton(
                 onPressed: () {
-                  // Add action to contact the doctor
+                
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF4A78FF),
@@ -316,7 +316,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 child: const Text(
-                  'Contact',
+                  'Connnect',  
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),

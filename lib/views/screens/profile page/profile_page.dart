@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:url_launcher/url_launcher.dart';  // Import the url_launcher package
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-
+  ProfilePage({super.key});
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,19 +42,19 @@ class ProfilePage extends StatelessWidget {
                       blurRadius: 20,
                     ),
                   ],
-                  image: const DecorationImage(
-                    image: AssetImage('assets/Donex Fiance.webp'),
+                  image: DecorationImage(
+                    image: NetworkImage(_auth.currentUser!.photoURL.toString()),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              const SizedBox(width: 24),
+              SizedBox(width: 24),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Donex Finance',
+                    Text(
+                      _auth.currentUser!.displayName.toString(),
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -127,41 +127,36 @@ class ProfilePage extends StatelessWidget {
               iconColor: Colors.green,
             ),
           ),
+          _buildSettingsItem(
+            icon: Icons.help_outline,
+            title: 'Help & Support',
+            subtitle: 'FAQ, Contact Us',
+            iconBgColor: Colors.purple.withOpacity(0.1),
+            iconColor: Colors.purple,
+          ),
           GestureDetector(
             onTap: () async {
-              final Uri emailUri = Uri(
+              const email = 'fouzanp.official@gmail.com';
+              const subject = 'Feedback for Your App';
+              const body = 'Enter your feedback here..';
+
+              final Uri emailLaunchUri = Uri(
                 scheme: 'mailto',
-                path: 'fouzanp.official@gmail.com', // Replace with your email
+                path: email,
                 queryParameters: {
-                  'subject': 'Help & Support Inquiry', // Optional: pre-fill subject
-                  'body': 'Please describe your issue here...', // Optional: pre-fill body
+                  'subject': subject,
+                  'body': body,
                 },
               );
-
-              // Launch the email client
-              if (await canLaunchUrl(emailUri)) {
-                await launchUrl(emailUri);
-              } else {
-                // Handle error if the email client cannot be opened
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Could not open email client. Please check if an email client is set up.')),
-                );
-              }
+              await launchUrl(emailLaunchUri);
             },
             child: _buildSettingsItem(
-              icon: Icons.help_outline,
-              title: 'Help & Support',
-              subtitle: 'FAQ, Contact Us',
-              iconBgColor: Colors.purple.withOpacity(0.1),
-              iconColor: Colors.purple,
+              icon: Icons.feedback_outlined,
+              title: 'Send Feedback',
+              subtitle: 'Help us improve our app',
+              iconBgColor: Colors.orange.withOpacity(0.1),
+              iconColor: Colors.orange,
             ),
-          ),
-          _buildSettingsItem(
-            icon: Icons.feedback_outlined,
-            title: 'Send Feedback',
-            subtitle: 'Help us improve our app',
-            iconBgColor: Colors.orange.withOpacity(0.1),
-            iconColor: Colors.orange,
           ),
 
           const SizedBox(height: 24),

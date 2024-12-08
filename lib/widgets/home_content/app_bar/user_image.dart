@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class UserImage extends StatelessWidget {
-  const UserImage({super.key});
-
+   UserImage({super.key});
+final FirebaseAuth _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,8 +16,8 @@ class UserImage extends StatelessWidget {
         ),
       ),
       child: ClipOval(
-        child: Image.asset(
-          'assets/Donex Fiance.webp',
+        child: Image.network(
+          _auth.currentUser!.photoURL.toString(),  
           fit: BoxFit.cover,
         ),
       ),
