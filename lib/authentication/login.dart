@@ -137,8 +137,8 @@ class LoginPage extends GetView<LoginController> {
         onPressed: () => Get.back(),
       ),
       title: const Text(
-        'Hey Doctor',
-        style: TextStyle(
+        '',  
+        style: TextStyle(  
           color: Colors.white,
           fontSize: 28,
           fontWeight: FontWeight.w800,

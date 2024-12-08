@@ -1,3 +1,5 @@
+import 'package:cure_connect_service/views/screens/home_page/health_care_articles.dart';
+import 'package:flutter/material.dart';
 import 'package:cure_connect_service/controllers/dr_carousel.dart';
 import 'package:cure_connect_service/widgets/home_content/app_bar/search_bar.dart';
 import 'package:cure_connect_service/widgets/home_content/app_bar/user_image.dart';
@@ -5,7 +7,7 @@ import 'package:cure_connect_service/widgets/home_content/app_bar/user_name.dart
 import 'package:cure_connect_service/widgets/home_content/category_grid.dart';
 import 'package:cure_connect_service/widgets/home_content/category_see_all_option.dart';
 import 'package:cure_connect_service/widgets/home_content/top_rated_dr_see_all_option.dart';
-import 'package:flutter/material.dart';
+
 
 class HomeContent extends StatelessWidget {
   HomeContent({super.key});
@@ -23,20 +25,17 @@ class HomeContent extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                   UserName(),
-                   UserImage()
-                  ],
+                  children: [UserName(), UserImage()],
                 ),
                 const SizedBox(height: 24),
-              AppBarSearchBar()
+                AppBarSearchBar()
               ],
-            ), 
+            ),
           ),
-          Expanded( 
+          Expanded(
             child: SingleChildScrollView(
               child: Container(
-                height:650,   
+                height: 900,
                 decoration: const BoxDecoration(
                   color: Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.only(
@@ -53,7 +52,7 @@ class HomeContent extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Top rated Doctors',
+                            'Top Rated Doctors',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
@@ -83,7 +82,10 @@ class HomeContent extends StatelessWidget {
                               ],
                             ),
                             SizedBox(height: 30),
-                            CategoryGrid()
+                            CategoryGrid(),
+                            SizedBox(height: 30),
+                            // Replace the previous health news section with this
+                            HealthCareArticles(),
                           ],
                         ),
                       ),
