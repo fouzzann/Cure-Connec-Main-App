@@ -1,5 +1,7 @@
+import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -304,11 +306,12 @@ class _CategoryPageState extends State<CategoryPage> {
             Positioned(
               bottom: 10,
               right: 10,
-              child: ElevatedButton(
+              child: ElevatedButton( 
                 onPressed: () {
-                
+                  Get.to(()=>DoctorProfileView(data: data,),
+                  transition: Transition.rightToLeftWithFade);  
                 },
-                style: ElevatedButton.styleFrom(
+                style: ElevatedButton.styleFrom(  
                   backgroundColor: Color(0xFF4A78FF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -316,7 +319,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 child: const Text(
-                  'Connnect',  
+                  'Connect',  
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),

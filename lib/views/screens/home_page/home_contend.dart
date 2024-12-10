@@ -8,7 +8,6 @@ import 'package:cure_connect_service/widgets/home_content/category_grid.dart';
 import 'package:cure_connect_service/widgets/home_content/category_see_all_option.dart';
 import 'package:cure_connect_service/widgets/home_content/top_rated_dr_see_all_option.dart';
 
-
 class HomeContent extends StatelessWidget {
   HomeContent({super.key});
 
@@ -84,7 +83,6 @@ class HomeContent extends StatelessWidget {
                             SizedBox(height: 30),
                             CategoryGrid(),
                             SizedBox(height: 30),
-                            // Replace the previous health news section with this
                             HealthCareArticles(),
                           ],
                         ),
