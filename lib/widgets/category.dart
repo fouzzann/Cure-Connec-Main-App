@@ -2,16 +2,19 @@ import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
 
   @override
   State<CategoryPage> createState() => _CategoryPageState();
-}
+} 
 
-class _CategoryPageState extends State<CategoryPage> {
+class _CategoryPageState extends State<CategoryPage> { 
   String selectedCategory = 'All';
+  Set<String> favoriteDoctors = {};
+
   final categories = [
     'All',
     'Addiction Medicine Specialist',
@@ -69,6 +72,31 @@ class _CategoryPageState extends State<CategoryPage> {
     'Vascular Surgeon',
     'Veterinary Doctor'
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    loadFavorites();
+  }
+
+  Future<void> loadFavorites() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      favoriteDoctors = prefs.getStringList('favorites')?.toSet() ?? {};
+    });
+  }
+    
+  Future<void> toggleFavorite(String doctorId) async { 
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      if (favoriteDoctors.contains(doctorId)) {
+        favoriteDoctors.remove(doctorId);
+      } else {
+        favoriteDoctors.add(doctorId);
+      }
+    });
+    await prefs.setStringList('favorites', favoriteDoctors.toList());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,14 +161,13 @@ class _CategoryPageState extends State<CategoryPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color:
-                      selectedCategory == category ? Color(0xFF4A78FF) : Colors.white,
+                  color: selectedCategory == category ? Color(0xFF4A78FF) : Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: selectedCategory == category
                         ? Color(0xFF4A78FF)
                         : Colors.grey.shade300,
-                  ), 
+                  ),
                 ),
                 child: Center(
                   child: Text(
@@ -165,11 +192,15 @@ class _CategoryPageState extends State<CategoryPage> {
       stream: FirebaseFirestore.instance
           .collection('doctors')
           .where('isAccepted', isEqualTo: true)
-          .where('category', isEqualTo: selectedCategory == 'All' ? null : selectedCategory)
+          .where('category',
+              isEqualTo: selectedCategory == 'All' ? null : selectedCategory)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(
+            color: Color(0xFF4A78FF),
+          ));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -189,6 +220,8 @@ class _CategoryPageState extends State<CategoryPage> {
 
   Widget _buildDoctorCard(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+    final isFavorite = favoriteDoctors.contains(doc.id);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -225,7 +258,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
+                  child: Column(  
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -237,13 +270,13 @@ class _CategoryPageState extends State<CategoryPage> {
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),
-                          ),
+                          ), 
                           IconButton(
                             icon: Icon(
-                              Icons.favorite_border,
-                              color: Colors.blue[400]
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                              color: isFavorite ?  Colors.blue : Colors.blue[400],
                             ),
-                            onPressed: () {},
+                            onPressed: () => toggleFavorite(doc.id),
                           ),
                         ],
                       ),
@@ -263,7 +296,8 @@ class _CategoryPageState extends State<CategoryPage> {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                          const Icon(Icons.location_on,
+                              size: 16, color: Colors.grey),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
@@ -306,25 +340,30 @@ class _CategoryPageState extends State<CategoryPage> {
             Positioned(
               bottom: 10,
               right: 10,
-              child: ElevatedButton( 
+              child: ElevatedButton(
                 onPressed: () {
-                  Get.to(()=>DoctorProfileView(data: data,),
-                  transition: Transition.rightToLeftWithFade);  
+                  Get.to(
+                    () => DoctorProfileView(
+                      data: data,
+                    ),
+                    transition: Transition.rightToLeftWithFade,
+                  );
                 },
-                style: ElevatedButton.styleFrom(  
+                style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF4A78FF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 ),
                 child: const Text(
-                  'Connect',  
+                  'Connect',
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
             ),
-          ], 
+          ],
         ),
       ),
     );

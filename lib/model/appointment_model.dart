@@ -1,38 +1,57 @@
-class Appointment {
-  final String gender;
-  final String fullName;
-  final String age;
-  final String userDisease;
-  final String image;
-  final String date;
-  final String time;
-  Appointment(
-      {required this.gender,
-      required this.fullName,
-      required this.age,
-      required this.userDisease,
-      required this.image,
-      required this.date,
-      required this.time});
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class AppointmentModel {
+  String? id; 
+  String name;
+  String gender;
+  int age;
+  String disease;
+  DateTime appointmentDate;
+  String appointmentTime;
+  double amount;
+  DateTime createdAt;
+  String drGmail;
+
+  AppointmentModel({
+    this.id,
+    required this.name,
+    required this.gender,
+    required this.age,
+    required this.disease,
+    required this.appointmentDate,
+    required this.appointmentTime,
+    this.amount = 566.0,
+    required this.drGmail,
+    DateTime? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
-      'image': image,
-      'fullName': fullName,
-      'age': age,
+      'name': name,
       'gender': gender,
-      'time': time,
-      'date': date
+      'age': age,
+      'disease': disease,
+      'appointmentDate': appointmentDate,
+      'appointmentTime': appointmentTime,
+      'amount': amount,
+      'createdAt': createdAt,
+      'drGmail':drGmail
     };
   }
-  factory Appointment.fromMap(Map<String, dynamic> map) {
-    return Appointment(
-        image: map['image'] ?? '',
-        fullName: map['fullName'] ?? '',
-        age: map['age'] ?? '',
-        gender: map['gender'] ?? '',
-        userDisease: map['userDisease'],
-        date: map['date'],
-        time: map['time']);
+
+  factory AppointmentModel.fromMap(
+      Map<String, dynamic> map, String documentId) {
+    return AppointmentModel(
+      id: documentId,
+      name: map['name'],
+      gender: map['gender'],
+      age: map['age'],
+      disease: map['disease'],
+      appointmentDate: (map['appointmentDate'] as Timestamp).toDate(),
+      appointmentTime: map['appointmentTime'],
+      amount: map['amount'],
+      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      drGmail: map['drGmail']
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cure_connect_service/authentication/login.dart';
+import 'package:cure_connect_service/views/screens/profile%20page/favorite_page.dart';
 import 'package:cure_connect_service/views/screens/profile%20page/privecy_and_policy.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -127,12 +128,18 @@ class ProfilePage extends StatelessWidget {
               iconColor: Colors.green,
             ),
           ),
-          _buildSettingsItem(
-            icon: Icons.help_outline,
-            title: 'Help & Support',
-            subtitle: 'FAQ, Contact Us',
-            iconBgColor: Colors.purple.withOpacity(0.1),
-            iconColor: Colors.purple,
+          GestureDetector(
+            onTap: (){ 
+              Get.to(()=>FavoritePage(),
+              transition: Transition.rightToLeftWithFade ); 
+            },
+            child: _buildSettingsItem(
+              icon: Icons.favorite_rounded,
+              title: 'Favorite', 
+              subtitle: 'Liked doctors',   
+              iconBgColor: Colors.purple.withOpacity(0.1),
+              iconColor: Colors.purple, 
+            ),
           ),
           GestureDetector(
             onTap: () async {

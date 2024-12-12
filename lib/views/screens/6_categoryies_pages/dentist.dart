@@ -1,3 +1,4 @@
+import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -190,7 +191,10 @@ class _DentistState extends State<Dentist> {
               bottom: 10,
               right: 10,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () { 
+                  Get.to(()=>DoctorProfileView(data: data,),
+                  transition: Transition.rightToLeftWithFade);  
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF4A78FF),
                   shape: RoundedRectangleBorder(

@@ -1,7 +1,7 @@
-import 'package:cure_connect_service/views/screens/booking_pages/disease_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'disease_form.dart'; // Import the disease form page
 
 class AppointmentBookingDateAndTime extends StatefulWidget {
   const AppointmentBookingDateAndTime({Key? key}) : super(key: key);
@@ -17,15 +17,16 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
 
   final List<String> timeSlots = [
     '9:00 AM', '9:30 AM', '10:00 AM',
-    '10:30 AM', '11:30 AM', '12:00 AM',
-    '12:30 AM', '1:00 AM', '1:30 AM',
-    '2:30 AM', '3:00 AM', '3:30 AM',
+    '10:30 AM', '11:00 AM', '11:30 AM',
+    '12:00 PM', '12:30 PM', '1:00 PM',
+    '1:30 PM', '2:00 PM', '2:30 PM',
+    '3:00 PM', '3:30 PM', '4:00 PM'
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
+    return Scaffold( 
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -35,10 +36,8 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
         ), 
         title: const Text(
           'Select Date and Time', 
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+          style:TextStyle(
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -75,118 +74,116 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
   }
  
   Widget _buildCalendar() {
-  return Container(
-    decoration: BoxDecoration(
-      color: Color(0xFF4A78FF).withOpacity(0.2),
-      borderRadius: BorderRadius.circular(16),
-    ),
-    padding: const EdgeInsets.all(16),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              DateFormat('MMMM yyyy').format(selectedDate),
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            // Add today's date display
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Color(0xFF4A78FF).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                'Today: ${DateFormat('MMM d').format(today)}',
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFF4A78FF).withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                DateFormat('MMMM yyyy').format(selectedDate),
                 style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
-              .map((day) => Text(
-                    day,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ))
-              .toList(),
-        ),
-        const SizedBox(height: 8),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7,
-            childAspectRatio: 1,
-          ),
-          itemCount: 31,
-          itemBuilder: (context, index) {
-            final currentDate = DateTime(selectedDate.year, selectedDate.month, index + 1);
-            final isToday = currentDate.year == today.year &&
-                currentDate.month == today.month &&
-                currentDate.day == today.day;
-            final isSelected = currentDate.year == selectedDate.year &&
-                currentDate.month == selectedDate.month &&
-                currentDate.day == selectedDate.day;
-
-            // Disable previous dates by checking if the date is before today
-            final isPastDate = currentDate.isBefore(today);
-
-            return InkWell(
-              onTap: isPastDate
-                  ? null
-                  : () {
-                      setState(() {
-                        selectedDate = currentDate;
-                      });
-                    },
-              child: Container(
-                alignment: Alignment.center,
-                margin: const EdgeInsets.all(2),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: isSelected
-                      ? Color(0xFF4A78FF)
-                      : isToday
-                          ? Color(0xFF4A78FF).withOpacity(0.1)
-                          : null,
-                  border: isToday && !isSelected
-                      ? Border.all(color: Color(0xFF4A78FF), width: 1)
-                      : null,
+                  color: Color(0xFF4A78FF).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    color: isSelected
-                        ? Colors.white
-                        : isToday
-                            ? Colors.blue
-                            : Colors.black,
-                    fontWeight: isSelected || isToday
-                        ? FontWeight.bold
-                        : FontWeight.w500,
+                  'Today: ${DateFormat('MMM d').format(today)}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
                   ),
                 ),
               ),
-            );
-          },
-        ),
-      ],
-    ),
-  );
-}
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+                .map((day) => Text(
+                      day,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ))
+                .toList(),
+          ),
+          const SizedBox(height: 8),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 7,
+              childAspectRatio: 1,
+            ),
+            itemCount: 31,
+            itemBuilder: (context, index) {
+              final currentDate = DateTime(selectedDate.year, selectedDate.month, index + 1);
+              final isToday = currentDate.year == today.year &&
+                  currentDate.month == today.month &&
+                  currentDate.day == today.day;
+              final isSelected = currentDate.year == selectedDate.year &&
+                  currentDate.month == selectedDate.month &&
+                  currentDate.day == selectedDate.day;
+
+              final isPastDate = currentDate.isBefore(today);
+
+              return InkWell(
+                onTap: isPastDate
+                    ? null
+                    : () {
+                        setState(() {
+                          selectedDate = currentDate;
+                        });
+                      },
+                child: Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected
+                        ? Color(0xFF4A78FF)
+                        : isToday
+                            ? Color(0xFF4A78FF).withOpacity(0.1)
+                            : null,
+                    border: isToday && !isSelected
+                        ? Border.all(color: Color(0xFF4A78FF), width: 1)
+                        : null,
+                  ),
+                  child: Text(
+                    '${index + 1}',
+                    style: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : isToday
+                              ? Colors.blue
+                              : Colors.black,
+                      fontWeight: isSelected || isToday
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildTimeSlots() {
     return GridView.builder(
@@ -234,8 +231,12 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
       width: double.infinity, 
       child: ElevatedButton(
         onPressed: selectedTime != null ? () {
-          Get.to(()=>DiseaseForm());
-        } : null,
+          Get.to(() => DiseaseForm(
+            selectedDate: selectedDate,
+            selectedTime: selectedTime!,
+          ), 
+          transition: Transition.rightToLeftWithFade);
+        } : null, 
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFF4A78FF),
           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -243,12 +244,12 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
             borderRadius: BorderRadius.circular(25),
           ),
         ), 
-        child: const Text(
+        child: const Text( 
           'Next',
           style: TextStyle(  
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color:Colors.white 
+            color: Colors.white 
           ),
         ),     
       ),

@@ -33,8 +33,7 @@ class HomeContent extends StatelessWidget {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Container(
-                height: 900,
+              child: Container(      
                 decoration: const BoxDecoration(
                   color: Color(0xFFF5F5F5),
                   borderRadius: BorderRadius.only(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -185,8 +186,9 @@ Widget _buildDoctorCard(QueryDocumentSnapshot doc) {
             bottom: 10,
             right: 10,
             child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
+              onPressed: () {Get.to(()=>DoctorProfileView(data: data,),
+                  transition: Transition.rightToLeftWithFade);  },
+              style: ElevatedButton.styleFrom( 
                 backgroundColor: const Color(0xFF4A78FF),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),

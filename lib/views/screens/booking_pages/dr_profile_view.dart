@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DoctorProfileView extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final data;
 
   const DoctorProfileView({Key? key, required this.data}) : super(key: key);
 
@@ -20,10 +20,8 @@ class DoctorProfileView extends StatelessWidget {
         ),
         title: Text( 
           'Dr. ${data['fullName'] ?? 'Unknown Doctor'}', 
-          style: const TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
