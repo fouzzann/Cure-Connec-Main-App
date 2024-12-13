@@ -8,10 +8,10 @@ class AppointmentModel {
   String disease;
   DateTime appointmentDate;
   String appointmentTime;
-  double amount;
   DateTime createdAt;
-  String drGmail;
-
+  String drEmail;
+  String userEmail;
+  String status;
   AppointmentModel({
     this.id,
     required this.name,
@@ -20,8 +20,9 @@ class AppointmentModel {
     required this.disease,
     required this.appointmentDate,
     required this.appointmentTime,
-    this.amount = 566.0,
-    required this.drGmail,
+    required this.drEmail,
+    required this.userEmail,
+    required this.status,
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -33,9 +34,10 @@ class AppointmentModel {
       'disease': disease,
       'appointmentDate': appointmentDate,
       'appointmentTime': appointmentTime,
-      'amount': amount,
       'createdAt': createdAt,
-      'drGmail':drGmail
+      'drGmail':drEmail,
+      'userEmail':userEmail,
+      'status' : status
     };
   }
 
@@ -49,9 +51,10 @@ class AppointmentModel {
       disease: map['disease'],
       appointmentDate: (map['appointmentDate'] as Timestamp).toDate(),
       appointmentTime: map['appointmentTime'],
-      amount: map['amount'],
       createdAt: (map['createdAt'] as Timestamp).toDate(),
-      drGmail: map['drGmail']
+      drEmail: map['drGmail'],
+      userEmail :map['userEmail'] ,
+      status: map['status']
     );
   }
 }

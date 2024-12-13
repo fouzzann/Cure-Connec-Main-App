@@ -1,9 +1,10 @@
+import 'package:cure_connect_service/model/doctor_model.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/book_appointment_date_and_time.dart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DoctorProfileView extends StatelessWidget {
-  final data;
+  final  data;
 
   const DoctorProfileView({Key? key, required this.data}) : super(key: key);
 
@@ -172,7 +173,7 @@ class DoctorProfileView extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>AppointmentBookingDateAndTime(),
+                    Get.to(()=>AppointmentBookingDateAndTime(drEmail:data['email'],), 
                     transition: Transition.rightToLeftWithFade); 
                   },
                   style: ElevatedButton.styleFrom( 

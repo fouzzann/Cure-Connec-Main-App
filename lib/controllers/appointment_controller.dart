@@ -23,15 +23,7 @@ class AppointmentController extends GetxController {
       }
 
       DocumentReference docRef =
-          await _firestore.collection('appointment').add({
-        'name': appointment.name,
-        'gender': appointment.gender,
-        'age': appointment.age,
-        'disease': appointment.disease,
-        'appointmentDate': appointment.appointmentDate,
-        'appointmentTime': appointment.appointmentTime,
-        'email': currentUser.email,
-      });
+          await _firestore.collection('appointment').add(appointment.toMap());
 
       appointmentId.value = docRef.id;
       isLoading.value = false;

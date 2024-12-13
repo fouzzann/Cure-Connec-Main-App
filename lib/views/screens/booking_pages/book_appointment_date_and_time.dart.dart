@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'disease_form.dart'; // Import the disease form page
 
 class AppointmentBookingDateAndTime extends StatefulWidget {
-  const AppointmentBookingDateAndTime({Key? key}) : super(key: key);
-
+  const AppointmentBookingDateAndTime({Key? key, required this.drEmail}) : super(key: key);
+   final String drEmail;
   @override
   State<AppointmentBookingDateAndTime> createState() => _AppointmentBookingDateAndTimeState();
 }
@@ -234,6 +234,7 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
           Get.to(() => DiseaseForm(
             selectedDate: selectedDate,
             selectedTime: selectedTime!,
+            drEmail: widget.drEmail,
           ), 
           transition: Transition.rightToLeftWithFade);
         } : null, 

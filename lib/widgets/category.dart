@@ -1,4 +1,5 @@
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
+import 'package:cure_connect_service/views/screens/search_dr.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -140,8 +141,11 @@ class _CategoryPageState extends State<CategoryPage> {
         ),
         IconButton(
           icon: const Icon(Icons.search, color: Colors.grey),
-          onPressed: () {},
-        ),
+          onPressed: () {
+            Get.to(()=>SearchDr(),
+            transition: Transition.downToUp);
+          },
+        ),  
       ],
     );
   }

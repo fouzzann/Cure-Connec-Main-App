@@ -54,6 +54,7 @@ class MessagePage extends StatelessWidget {
             color: Color(0xFF1E293B),
           ),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: Icon(Icons.search, color: Colors.grey[600]),

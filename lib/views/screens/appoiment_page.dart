@@ -32,18 +32,6 @@ class AppointmentPage extends StatelessWidget {
         elevation: 0,
         scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
-            ),
-            child: const Icon(Icons.arrow_back_ios_new, size: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
         title: const Text(
           'My Appointments',
           style: TextStyle(
@@ -52,6 +40,7 @@ class AppointmentPage extends StatelessWidget {
             color: Color(0xFF1E293B),
           ),
         ),
+        centerTitle: true,
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(20),

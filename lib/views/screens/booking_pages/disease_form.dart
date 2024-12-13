@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -8,11 +9,11 @@ import 'package:cure_connect_service/model/appointment_model.dart';
 class DiseaseForm extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;
-
+  final String drEmail;
   DiseaseForm({
     Key? key, 
     required this.selectedDate, 
-    required this.selectedTime
+    required this.selectedTime, required this.drEmail
   }) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
@@ -20,8 +21,8 @@ class DiseaseForm extends StatelessWidget {
   final TextEditingController _diseaseController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final ValueNotifier<String> _genderNotifier = ValueNotifier<String>('Male');
-  final TextEditingController _drGmail =TextEditingController();
- 
+  // final TextEditingController _drGmail =TextEditingController();
+ final FirebaseAuth _auth =FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final AppointmentController appointmentController = Get.put(AppointmentController());
@@ -170,13 +171,15 @@ class DiseaseForm extends StatelessWidget {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       AppointmentModel appointment = AppointmentModel(
-                        drGmail :_drGmail.text,
+                        drEmail :drEmail,
                         name: _nameController.text,
                         gender: _genderNotifier.value, 
                         age: int.parse(_ageController.text),
                         disease: _diseaseController.text,
                         appointmentDate: selectedDate,
                         appointmentTime: selectedTime,
+                        userEmail : _auth.currentUser!.email.toString(),
+                        status: 'upcoming'
                       );
                       await appointmentController.addAppointment(appointment);
                     }
