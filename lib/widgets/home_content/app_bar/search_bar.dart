@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppBarSearchBar extends StatelessWidget {
-  const AppBarSearchBar({super.key});
+  const AppBarSearchBar({super.key});  
 
   @override
   Widget build(BuildContext context) {

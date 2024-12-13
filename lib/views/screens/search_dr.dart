@@ -1,3 +1,4 @@
+import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -6,18 +7,41 @@ class SearchDr extends StatefulWidget {
   const SearchDr({Key? key}) : super(key: key);
 
   @override
-  State<SearchDr> createState() => _SearchDrState();  
+  State<SearchDr> createState() => _SearchDrState();
 }
 
 class _SearchDrState extends State<SearchDr> {
   final TextEditingController _searchController = TextEditingController();
-  List<DocumentSnapshot> _doctors = [];
+  List<DocumentSnapshot> _users = [];
+  List<String> _categories = [];
+  String? _selectedCategory;
   bool _isLoading = false;
 
-  void _searchDoctors(String query) async {
-    if (query.isEmpty) {
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final categoriesSnapshot =
+          await FirebaseFirestore.instance.collection('categories').get();
+
       setState(() {
-        _doctors = [];
+        _categories = categoriesSnapshot.docs
+            .map((doc) => doc['name'] as String)
+            .toList();
+      });
+    } catch (e) {
+      _showErrorSnackbar('Error loading categories');
+    }
+  }
+
+  void _searchUsers(String query) async {
+    if (query.isEmpty && _selectedCategory == null) {
+      setState(() {
+        _users = [];
       });
       return;
     }
@@ -27,25 +51,34 @@ class _SearchDrState extends State<SearchDr> {
     });
 
     try {
-      // Convert the query to lowercase for case-insensitive search
-      final normalizedQuery = query.toLowerCase();
+      Query doctorsQuery = FirebaseFirestore.instance.collection('doctors');
 
-      // Query to search by full name (case-insensitive)
-      final nameQuery = await FirebaseFirestore.instance
-          .collection('doctors')
-          .where('fullName', isGreaterThanOrEqualTo: normalizedQuery)
-          .where('fullName', isLessThan: normalizedQuery) 
-          .get();
+      // Apply category filter if selected
+      if (_selectedCategory != null) {
+        doctorsQuery =
+            doctorsQuery.where('category', isEqualTo: _selectedCategory);
+      }
+
+      // Apply name search if query exists
+      if (query.isNotEmpty) {
+        String capitalizedQuery =
+            query[0].toUpperCase() + query.substring(1).toLowerCase();
+        doctorsQuery = doctorsQuery
+            .where('fullName', isGreaterThanOrEqualTo: capitalizedQuery)
+            .where('fullName', isLessThan: capitalizedQuery + '\uf8ff');
+      }
+
+      final userQuery = await doctorsQuery.get();
 
       setState(() {
-        _doctors = nameQuery.docs;
+        _users = userQuery.docs;
         _isLoading = false;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
-      _showErrorSnackbar('Error searching doctors');
+      _showErrorSnackbar('Error searching users');
     }
   }
 
@@ -73,6 +106,44 @@ class _SearchDrState extends State<SearchDr> {
       ),
       body: Column(
         children: [
+          // Category Filter
+          if (_categories.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: _selectedCategory,
+                    hint: const Text('Select Category'),
+                    items: [
+                      const DropdownMenuItem<String>(
+                        value: null,
+                        child: Text('All Categories'),
+                      ),
+                      ..._categories
+                          .map((category) => DropdownMenuItem<String>(
+                                value: category,
+                                child: Text(category),
+                              ))
+                          .toList(),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategory = value;
+                      });
+                      _searchUsers(_searchController.text);
+                    },
+                  ),
+                ),
+              ),
+            ),
+
           // Search Bar
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -86,9 +157,7 @@ class _SearchDrState extends State<SearchDr> {
                         icon: const Icon(Icons.clear),
                         onPressed: () {
                           _searchController.clear();
-                          setState(() {
-                            _doctors = [];
-                          });
+                          _searchUsers('');
                         },
                       )
                     : null,
@@ -99,7 +168,7 @@ class _SearchDrState extends State<SearchDr> {
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
-              onChanged: _searchDoctors,
+              onChanged: _searchUsers,
             ),
           ),
 
@@ -113,21 +182,20 @@ class _SearchDrState extends State<SearchDr> {
   }
 
   Widget _buildSearchResults() {
-    // Loading State
     if (_isLoading) {
       return const Center(
-        child: CircularProgressIndicator(color:  Color(0xFF4A78FF),), 
+        child: CircularProgressIndicator(color: Color(0xFF4A78FF)),
       );
     }
 
-    // No Results State
-    if (_doctors.isEmpty && _searchController.text.isNotEmpty) {
+    if (_users.isEmpty &&
+        (_searchController.text.isNotEmpty || _selectedCategory != null)) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.search_off,
+              Icons.person_search_outlined,
               size: 100,
               color: Colors.grey[300],
             ),
@@ -144,20 +212,19 @@ class _SearchDrState extends State<SearchDr> {
       );
     }
 
-    // Initial State
-    if (_doctors.isEmpty) {
+    if (_users.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.medical_services_outlined,
+              Icons.group_outlined,
               size: 100,
               color: Colors.grey[300],
             ),
             const SizedBox(height: 16),
             Text(
-              'Search for doctors',
+              'Search Doctors by Name or Category',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[600],
@@ -168,12 +235,11 @@ class _SearchDrState extends State<SearchDr> {
       );
     }
 
-    // Results List
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _doctors.length,
+      itemCount: _users.length,
       itemBuilder: (context, index) {
-        final doctor = _doctors[index].data() as Map<String, dynamic>;
+        final user = _users[index].data() as Map<String, dynamic>;
 
         return Card(
           elevation: 4,
@@ -184,16 +250,15 @@ class _SearchDrState extends State<SearchDr> {
           child: ListTile(
             leading: CircleAvatar(
               radius: 30,
-              backgroundImage: doctor['image'] != null
-                  ? NetworkImage(doctor['image'])
-                  : null,
+              backgroundImage:
+                  user['image'] != null ? NetworkImage(user['image']) : null,
               backgroundColor: Colors.grey[200],
-              child: doctor['image'] == null
+              child: user['image'] == null 
                   ? Icon(Icons.person, color: Colors.grey[600])
                   : null,
             ),
             title: Text(
-              doctor['fullName'] ?? 'Unknown Doctor',
+              user['fullName'] ?? user['username'] ?? 'Unknown User',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
               ),
@@ -201,18 +266,29 @@ class _SearchDrState extends State<SearchDr> {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(doctor['category'] ?? 'Unknown Specialty'),
-                Text(doctor['hospitalName'] ?? 'Unknown Hospital'),
+                if (user['category'] != null)
+                  Text(user['category'],
+                      style: const TextStyle(
+                        color: Color(0xFF4A78FF),
+                        fontWeight: FontWeight.w500,
+                      )),
+                if (user['username'] != null) Text('@${user['username']}'),
+                if (user['bio'] != null)
+                  Text(user['bio'],
+                      maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
             ),
             trailing: ElevatedButton(
-              onPressed: () {},
-              child: Text(
-                'Connect', 
-                style: TextStyle(color: Colors.white),
-              ),
+              onPressed: () {
+                Get.to(() => DoctorProfileView(data: _users[index].data()),
+                    transition: Transition.rightToLeftWithFade);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF4A78FF),
+              ),
+              child: const Text(
+                'Connect',
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ),
@@ -220,4 +296,4 @@ class _SearchDrState extends State<SearchDr> {
       },
     );
   }
-} 
+}
