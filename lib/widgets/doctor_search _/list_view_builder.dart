@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 class ListViewBuilder extends StatelessWidget {
    ListViewBuilder({super.key});
 
-  @override
   final SearchDrController controller = Get.put(SearchDrController());
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -44,7 +43,7 @@ class ListViewBuilder extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (user['category'] != null)
-                  Text(user['category'],
+                  Text(user['category'],   
                       style: const TextStyle(
                         color: AppColors.mainTheme,
                         fontWeight: FontWeight.w500,

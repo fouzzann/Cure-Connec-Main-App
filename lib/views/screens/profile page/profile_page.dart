@@ -1,15 +1,11 @@
-import 'package:cure_connect_service/authentication/login.dart';
-import 'package:cure_connect_service/views/screens/profile%20page/favorite_page.dart';
-import 'package:cure_connect_service/views/screens/profile%20page/privecy_and_policy.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cure_connect_service/widgets/profile_page/header.dart';
+import 'package:cure_connect_service/widgets/profile_page/logout.dart';
+import 'package:cure_connect_service/widgets/profile_page/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,79 +23,10 @@ class ProfilePage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
-          // Profile Section
           const SizedBox(height: 20),
-          Row(
-            children: [
-              Container(
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.1),
-                      spreadRadius: 10,
-                      blurRadius: 20,
-                    ),
-                  ],
-                  image: DecorationImage(
-                    image: NetworkImage(_auth.currentUser!.photoURL.toString()),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(width: 24),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      _auth.currentUser!.displayName.toString(),
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.verified,
-                            size: 14,
-                            color: Colors.blue,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            'Verified Profile',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+          Header(),
           const SizedBox(height: 40),
           const SizedBox(height: 40),
-
-          // Settings Section
           const Text(
             'Settings',
             style: TextStyle(
@@ -108,130 +35,9 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
-          
-          GestureDetector(
-            onTap: () {
-              Get.to(() => PrivacyPolicyPage());
-            },
-            child: _buildSettingsItem(
-              icon: Icons.shield_outlined,
-              title: 'Privacy and Policy',
-              subtitle: '2FA, Privacy',
-              iconBgColor: Colors.green.withOpacity(0.1),
-              iconColor: Colors.green,
-            ),
-          ),
-          GestureDetector(
-            onTap: (){ 
-              Get.to(()=>FavoritePage(),
-              transition: Transition.rightToLeftWithFade ); 
-            },
-            child: _buildSettingsItem(
-              icon: Icons.favorite_rounded,
-              title: 'Favorite', 
-              subtitle: 'Liked doctors',   
-              iconBgColor: Colors.purple.withOpacity(0.1),
-              iconColor: Colors.purple, 
-            ),
-          ),
-          GestureDetector(
-            onTap: () async {
-              const email = 'fouzanp.official@gmail.com';
-              const subject = 'Feedback for Your App';
-              const body = 'Enter your feedback here..';
-
-              final Uri emailLaunchUri = Uri(
-                scheme: 'mailto',
-                path: email,
-                queryParameters: {
-                  'subject': subject,
-                  'body': body,
-                },
-              );
-              await launchUrl(emailLaunchUri);
-            },
-            child: _buildSettingsItem(
-              icon: Icons.feedback_outlined,
-              title: 'Send Feedback',
-              subtitle: 'Help us improve our app',
-              iconBgColor: Colors.orange.withOpacity(0.1),
-              iconColor: Colors.orange,
-            ),
-          ),
-
+          Settings(),
           const SizedBox(height: 24),
-
-          // Logout Button
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            child: ElevatedButton(
-              onPressed: () async {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        backgroundColor: Colors.white,
-                        title: Text(
-                          'Logout',
-                          style: TextStyle(
-                            color: Color(0xFF4A78FF),
-                          ),
-                        ),
-                        content: Text(
-                            'Are you sure you want to logout from Cure Connect'),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text(
-                                'Cancel',
-                                style: TextStyle(
-                                  color: Color(0xFF4A78FF),
-                                ),
-                              )),
-                          TextButton(
-                              onPressed: () async {
-                                await FirebaseAuth.instance.signOut();
-                                await GoogleSignIn().signOut();
-                                Get.offAll(() => LoginPage(),
-                                    transition: Transition.downToUp);
-                              },
-                              child: Text(
-                                'Confirm',
-                                style: TextStyle(color: Colors.red),
-                              ))
-                        ],
-                      );
-                    });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.withOpacity(0.1),
-                foregroundColor: Colors.red,
-                elevation: 0,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.logout),
-                  SizedBox(width: 8),
-                  Text(
-                    'Log Out',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
+          Logout(),
           const SizedBox(height: 16),
           Center(
             child: Text(
@@ -243,71 +49,6 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSettingsItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color iconBgColor,
-    required Color iconColor,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.grey[200]!,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              icon,
-              color: iconColor,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.grey[400],
-            size: 16,
-          ),
         ],
       ),
     );
