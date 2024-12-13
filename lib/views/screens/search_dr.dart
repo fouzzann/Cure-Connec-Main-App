@@ -1,95 +1,11 @@
+
+import 'package:cure_connect_service/controllers/search_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
-class SearchDr extends StatefulWidget {
-  const SearchDr({Key? key}) : super(key: key);
-
-  @override
-  State<SearchDr> createState() => _SearchDrState();
-}
-
-class _SearchDrState extends State<SearchDr> {
-  final TextEditingController _searchController = TextEditingController();
-  List<DocumentSnapshot> _users = [];
-  List<String> _categories = [];
-  String? _selectedCategory;
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadCategories();
-  }
-
-  Future<void> _loadCategories() async {
-    try {
-      final categoriesSnapshot =
-          await FirebaseFirestore.instance.collection('categories').get();
-
-      setState(() {
-        _categories = categoriesSnapshot.docs
-            .map((doc) => doc['name'] as String)
-            .toList();
-      });
-    } catch (e) {
-      _showErrorSnackbar('Error loading categories');
-    }
-  }
-
-  void _searchUsers(String query) async {
-    if (query.isEmpty && _selectedCategory == null) {
-      setState(() {
-        _users = [];
-      });
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      Query doctorsQuery = FirebaseFirestore.instance.collection('doctors');
-
-      // Apply category filter if selected
-      if (_selectedCategory != null) {
-        doctorsQuery =
-            doctorsQuery.where('category', isEqualTo: _selectedCategory);
-      }
-
-      // Apply name search if query exists
-      if (query.isNotEmpty) {
-        String capitalizedQuery =
-            query[0].toUpperCase() + query.substring(1).toLowerCase();
-        doctorsQuery = doctorsQuery
-            .where('fullName', isGreaterThanOrEqualTo: capitalizedQuery)
-            .where('fullName', isLessThan: capitalizedQuery + '\uf8ff');
-      }
-
-      final userQuery = await doctorsQuery.get();
-
-      setState(() {
-        _users = userQuery.docs;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showErrorSnackbar('Error searching users');
-    }
-  }
-
-  void _showErrorSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
+class SearchDr extends StatelessWidget {
+  final SearchDrController controller = Get.put(SearchDrController());
 
   @override
   Widget build(BuildContext context) {
@@ -106,58 +22,20 @@ class _SearchDrState extends State<SearchDr> {
       ),
       body: Column(
         children: [
-          // Category Filter
-          if (_categories.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: _selectedCategory,
-                    hint: const Text('Select Category'),
-                    items: [
-                      const DropdownMenuItem<String>(
-                        value: null,
-                        child: Text('All Categories'),
-                      ),
-                      ..._categories
-                          .map((category) => DropdownMenuItem<String>(
-                                value: category,
-                                child: Text(category),
-                              ))
-                          .toList(),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value;
-                      });
-                      _searchUsers(_searchController.text);
-                    },
-                  ),
-                ),
-              ),
-            ),
-
-          // Search Bar
+          Obx(() => _buildCategoryFilter()),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(
-              controller: _searchController,
+              controller: controller.searchController,
               decoration: InputDecoration(
                 hintText: 'Search doctors by name',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchController.text.isNotEmpty
+                suffixIcon: controller.searchController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
-                          _searchController.clear();
-                          _searchUsers('');
+                          controller.searchController.clear();
+                          controller.searchUsers('');
                         },
                       )
                     : null,
@@ -168,28 +46,65 @@ class _SearchDrState extends State<SearchDr> {
                 filled: true,
                 fillColor: Colors.grey[200],
               ),
-              onChanged: _searchUsers,
+              onChanged: controller.searchUsers,
             ),
           ),
-
-          // Search Results
-          Expanded(
-            child: _buildSearchResults(),
-          ),
+          Expanded(child: Obx(() => _buildSearchResults())),
         ],
       ),
     );
   }
 
+  Widget _buildCategoryFilter() {
+    if (controller.categories.isEmpty) {
+      return const SizedBox();
+    }  
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            isExpanded: true,
+            value: controller.selectedCategory.value,
+            hint: const Text('Select Category'),
+            items: [
+              const DropdownMenuItem<String>(
+                value: null,
+                child: Text('All Categories'),
+              ), 
+              ...controller.categories
+                  .map((category) => DropdownMenuItem<String>(
+                        value: category,
+                        child: Text(category),
+                      ))
+                  .toList(),
+            ],
+            onChanged: (value) {
+              controller.selectedCategory.value = value;
+              controller.searchUsers(controller.searchController.text);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSearchResults() {
-    if (_isLoading) {
+    if (controller.isLoading.value) {
       return const Center(
         child: CircularProgressIndicator(color: Color(0xFF4A78FF)),
       );
     }
 
-    if (_users.isEmpty &&
-        (_searchController.text.isNotEmpty || _selectedCategory != null)) {
+    if (controller.users.isEmpty &&
+        (controller.searchController.text.isNotEmpty ||
+            controller.selectedCategory.value != null)) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -212,7 +127,7 @@ class _SearchDrState extends State<SearchDr> {
       );
     }
 
-    if (_users.isEmpty) {
+    if (controller.users.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -237,9 +152,10 @@ class _SearchDrState extends State<SearchDr> {
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: _users.length,
+      itemCount: controller.users.length,
       itemBuilder: (context, index) {
-        final user = _users[index].data() as Map<String, dynamic>;
+        final user =
+            controller.users[index].data() as Map<String, dynamic>;
 
         return Card(
           elevation: 4,
@@ -250,10 +166,11 @@ class _SearchDrState extends State<SearchDr> {
           child: ListTile(
             leading: CircleAvatar(
               radius: 30,
-              backgroundImage:
-                  user['image'] != null ? NetworkImage(user['image']) : null,
+              backgroundImage: user['image'] != null
+                  ? NetworkImage(user['image'])
+                  : null,
               backgroundColor: Colors.grey[200],
-              child: user['image'] == null 
+              child: user['image'] == null
                   ? Icon(Icons.person, color: Colors.grey[600])
                   : null,
             ),
@@ -280,7 +197,7 @@ class _SearchDrState extends State<SearchDr> {
             ),
             trailing: ElevatedButton(
               onPressed: () {
-                Get.to(() => DoctorProfileView(data: _users[index].data()),
+                Get.to(() => DoctorProfileView(data: controller.users[index].data()),
                     transition: Transition.rightToLeftWithFade);
               },
               style: ElevatedButton.styleFrom(
