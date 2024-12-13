@@ -5,7 +5,7 @@ import 'package:cure_connect_service/views/screens/6_categoryies_pages/ophthalmo
 import 'package:cure_connect_service/views/screens/6_categoryies_pages/pediatrician.dart';
 import 'package:cure_connect_service/views/screens/6_categoryies_pages/physiotherapist.dart';
 import 'package:cure_connect_service/views/utils/category_widget_colors.dart';
-import 'package:cure_connect_service/widgets/category_designs.dart';
+import 'package:cure_connect_service/widgets/home_content/category_designs.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
