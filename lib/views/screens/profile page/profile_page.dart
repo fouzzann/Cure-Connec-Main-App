@@ -109,13 +109,7 @@ class ProfilePage extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          _buildSettingsItem(
-            icon: Icons.person,
-            title: 'Account',
-            subtitle: 'Personal information',
-            iconBgColor: Colors.blue.withOpacity(0.1),
-            iconColor: Colors.blue,
-          ),
+          
           GestureDetector(
             onTap: () {
               Get.to(() => PrivacyPolicyPage());

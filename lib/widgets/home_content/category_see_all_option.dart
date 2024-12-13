@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/widgets/category.dart';
+import 'package:cure_connect_service/views/screens/all_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +9,7 @@ class CategorySeeAllOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () async {
-        Get.to(() => CategoryPage(),
+        Get.to(() => AllCategoryPage(),
         transition: Transition.rightToLeft);
       },
       style: TextButton.styleFrom(

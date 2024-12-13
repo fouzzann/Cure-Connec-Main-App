@@ -68,7 +68,7 @@ class DiseaseForm extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 24),      
                 
                 // Name Input
                 _buildTextField(

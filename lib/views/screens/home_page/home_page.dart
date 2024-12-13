@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: _pages[_selectedIndex],
       ),
-      bottomNavigationBar:BottomNavBar(
+      bottomNavigationBar:BottomNavBar( 
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
