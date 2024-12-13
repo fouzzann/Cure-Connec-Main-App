@@ -1,71 +1,17 @@
+
+import 'package:cure_connect_service/controllers/added_favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class FavoritePage extends StatefulWidget {
+class FavoritePage extends GetView<AddedFavoriteController> {
   const FavoritePage({Key? key}) : super(key: key);
 
   @override
-  _FavoritePageState createState() => _FavoritePageState();
-}
-
-class _FavoritePageState extends State<FavoritePage> {
-  final Set<String> _favoriteDoctors = {};
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavorites();
-  }
-
-  Future<void> _loadFavorites() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final storedFavorites = prefs.getStringList('favorites') ?? [];
-
-      setState(() {
-        _favoriteDoctors.addAll(storedFavorites);
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showErrorSnackbar('Failed to load favorites');
-    }
-  }
-
-  void _toggleFavorite(String doctorId) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      setState(() {
-        if (_favoriteDoctors.contains(doctorId)) {
-          _favoriteDoctors.remove(doctorId);
-        } else {
-          _favoriteDoctors.add(doctorId);
-        }
-      });
-
-      await prefs.setStringList('favorites', _favoriteDoctors.toList());
-    } catch (e) {
-      _showErrorSnackbar('Failed to update favorites');
-    }
-  }
-
-  void _showErrorSnackbar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    Get.put(AddedFavoriteController());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -74,38 +20,43 @@ class _FavoritePageState extends State<FavoritePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: IconButton(
+        leading: IconButton( 
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Get.back(),
         ),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Color(0xFF4A78FF),
-              ),
-            )
-          : _favoriteDoctors.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No favorite doctors found',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: _favoriteDoctors.length,
-                  itemBuilder: (context, index) {
-                    final doctorId = _favoriteDoctors.elementAt(index);
-                    return _buildDoctorCard(doctorId);
-                  },
-                ),
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Color(0xFF4A78FF),
+            ),
+          );
+        }
+  
+        if (controller.favoriteDoctors.isEmpty) {
+          return const Center(
+            child: Text(
+              'No favorite doctors found',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: controller.favoriteDoctors.length,
+          itemBuilder: (context, index) {
+            final doctorId = controller.favoriteDoctors.elementAt(index);
+            return _buildDoctorCard(doctorId);
+          },
+        );
+      }),
     );
   }
 
   Widget _buildDoctorCard(String doctorId) {
-    return FutureBuilder<DocumentSnapshot>(
-      future:
-          FirebaseFirestore.instance.collection('doctors').doc(doctorId).get(),
+    return FutureBuilder<DocumentSnapshot?>(
+      future: controller.getDoctorDetails(doctorId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -193,17 +144,17 @@ class _FavoritePageState extends State<FavoritePage> {
               ),
               Column(
                 children: [
-                  IconButton(
+                  Obx(() => IconButton(
                     icon: Icon(
-                      _favoriteDoctors.contains(doctorId)
+                      controller.favoriteDoctors.contains(doctorId)
                           ? Icons.favorite
                           : Icons.favorite_border,
-                      color: _favoriteDoctors.contains(doctorId)
+                      color: controller.favoriteDoctors.contains(doctorId)
                           ? Colors.blue
                           : Colors.grey,
                     ),
-                    onPressed: () => _toggleFavorite(doctorId),
-                  ),
+                    onPressed: () => controller.toggleFavorite(doctorId),
+                  )),
                   ElevatedButton(
                     onPressed: () {
                       Get.to(

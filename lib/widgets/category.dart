@@ -1,20 +1,12 @@
+import 'package:cure_connect_service/controllers/favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:cure_connect_service/views/screens/search_dr.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
-
-  @override
-  State<CategoryPage> createState() => _CategoryPageState();
-} 
-
-class _CategoryPageState extends State<CategoryPage> { 
-  String selectedCategory = 'All';
-  Set<String> favoriteDoctors = {};
+class CategoryPage extends StatelessWidget {
+  CategoryPage({super.key});
 
   final categories = [
     'All',
@@ -24,7 +16,7 @@ class _CategoryPageState extends State<CategoryPage> {
     'Cardiologist',
     'Chiropractor',
     'Clinical Pharmacologist',
-    'Clinical Psychologist',
+    'Clinical Psychologist',   
     'Critical Care Specialist',
     'Dentist',
     'Dermatologist',
@@ -74,33 +66,14 @@ class _CategoryPageState extends State<CategoryPage> {
     'Veterinary Doctor'
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    loadFavorites();
-  }
-
-  Future<void> loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      favoriteDoctors = prefs.getStringList('favorites')?.toSet() ?? {};
-    });
-  }
-    
-  Future<void> toggleFavorite(String doctorId) async { 
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      if (favoriteDoctors.contains(doctorId)) {
-        favoriteDoctors.remove(doctorId);
-      } else {
-        favoriteDoctors.add(doctorId);
-      }
-    });
-    await prefs.setStringList('favorites', favoriteDoctors.toList());
-  }
+  // Initialize the FavoritesController
+  final FavoritesController favoritesController = Get.put(FavoritesController());
 
   @override
   Widget build(BuildContext context) {
+    // Use a stateless approach with GetX reactivity
+    final RxString selectedCategory = 'All'.obs;
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SafeArea(
@@ -110,9 +83,9 @@ class _CategoryPageState extends State<CategoryPage> {
             children: [
               _buildHeader(),
               const SizedBox(height: 20),
-              _buildCategories(),
+              _buildCategories(selectedCategory),
               const SizedBox(height: 20),
-              Expanded(child: _buildDoctorsList()),
+              Expanded(child: _buildDoctorsList(selectedCategory)),
             ],
           ),
         ),
@@ -128,7 +101,7 @@ class _CategoryPageState extends State<CategoryPage> {
           children: [
             IconButton(
               icon: const Icon(Icons.arrow_back_ios, size: 20),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Get.back(),
             ),
             const Text(
               'Categories',
@@ -142,7 +115,7 @@ class _CategoryPageState extends State<CategoryPage> {
         IconButton(
           icon: const Icon(Icons.search, color: Colors.grey),
           onPressed: () {
-            Get.to(()=>SearchDr(),
+            Get.to(() => SearchDr(),
             transition: Transition.downToUp);
           },
         ),  
@@ -150,7 +123,7 @@ class _CategoryPageState extends State<CategoryPage> {
     );
   }
 
-  Widget _buildCategories() {
+  Widget _buildCategories(RxString selectedCategory) {
     return SizedBox(
       height: 40,
       child: ListView.builder(
@@ -158,18 +131,20 @@ class _CategoryPageState extends State<CategoryPage> {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          return Padding(
+          return Obx(() => Padding(
             padding: const EdgeInsets.only(right: 8),
             child: InkWell(
-              onTap: () => setState(() => selectedCategory = category),
+              onTap: () => selectedCategory.value = category,
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
-                  color: selectedCategory == category ? Color(0xFF4A78FF) : Colors.white,
+                  color: selectedCategory.value == category 
+                      ? const Color(0xFF4A78FF) 
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: selectedCategory == category
-                        ? Color(0xFF4A78FF)
+                    color: selectedCategory.value == category
+                        ? const Color(0xFF4A78FF)
                         : Colors.grey.shade300,
                   ),
                 ),
@@ -177,7 +152,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   child: Text(
                     category,
                     style: TextStyle(
-                      color: selectedCategory == category
+                      color: selectedCategory.value == category
                           ? Colors.white
                           : Colors.grey[600],
                     ),
@@ -185,19 +160,19 @@ class _CategoryPageState extends State<CategoryPage> {
                 ),
               ),
             ),
-          );
+          ));
         },
       ),
     );
   }
 
-  Widget _buildDoctorsList() {
-    return StreamBuilder<QuerySnapshot>(
+  Widget _buildDoctorsList(RxString selectedCategory) {
+    return Obx(() => StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('doctors')
           .where('isAccepted', isEqualTo: true)
           .where('category',
-              isEqualTo: selectedCategory == 'All' ? null : selectedCategory)
+              isEqualTo: selectedCategory.value == 'All' ? null : selectedCategory.value)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -219,157 +194,160 @@ class _CategoryPageState extends State<CategoryPage> {
           },
         );
       },
-    );
+    ));
   }
 
   Widget _buildDoctorCard(QueryDocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    final isFavorite = favoriteDoctors.contains(doc.id);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Stack(
-          children: [
-            Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    data['image'] ?? '',
-                    width: 60,
-                    height: 60,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 60,
-                      height: 60,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.person),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(  
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            data['fullName'] ?? '',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ), 
-                          IconButton(
-                            icon: Icon(
-                              isFavorite ? Icons.favorite : Icons.favorite_border,
-                              color: isFavorite ?  Colors.blue : Colors.blue[400],
-                            ),
-                            onPressed: () => toggleFavorite(doc.id),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        '${data['category']} | ${data['hospitalName']} Hospital',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                        ),
-                      ),
-                      Text(
-                        '${data['yearsOfExperience']} Years of experience',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 13,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          const Icon(Icons.location_on,
-                              size: 16, color: Colors.grey),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              '${data['location']}',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 13,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            '4.3',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '(3,837 reviews)',
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 10,
-              right: 10,
-              child: ElevatedButton(
-                onPressed: () {
-                  Get.to(
-                    () => DoctorProfileView(
-                      data: data,
-                    ),
-                    transition: Transition.rightToLeftWithFade,
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF4A78FF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                ),
-                child: const Text(
-                  'Connect',
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
+    return Obx(() {
+      final isFavorite = favoritesController.isFavorite(doc.id);
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-      ),
-    );
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      data['image'] ?? '',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 60,
+                        height: 60,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.person),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(  
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              data['fullName'] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
+                            ), 
+                            IconButton(
+                              icon: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorite ? Colors.blue : Colors.blue[400],
+                              ),
+                              onPressed: () => favoritesController.toggleFavorite(doc.id),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '${data['category']} | ${data['hospitalName']} Hospital',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 13,
+                          ),
+                        ),
+                        Text(
+                          '${data['yearsOfExperience']} Years of experience',
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 13,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on,
+                                size: 16, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                '${data['location']}',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              '4.3',
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '(3,837 reviews)',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(
+                      () => DoctorProfileView(
+                        data: data,
+                      ),
+                      transition: Transition.rightToLeftWithFade,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4A78FF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  child: const Text(
+                    'Connect',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

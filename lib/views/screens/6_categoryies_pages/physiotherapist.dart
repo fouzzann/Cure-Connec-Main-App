@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cure_connect_service/controllers/favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,6 +9,8 @@ class Physiotherapist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final FavoritesController favoritesController = Get.put(FavoritesController());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFF5F5F5),
@@ -29,181 +32,191 @@ class Physiotherapist extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Expanded(child: _buildDoctorsList()),
+              Expanded(child: _buildDoctorsList(favoritesController)),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-Widget _buildDoctorsList() {
-  return StreamBuilder<QuerySnapshot>(
-    stream: FirebaseFirestore.instance
-        .collection('doctors')
-        .where('isAccepted', isEqualTo: true)
-        .where('category', isEqualTo: 'Physiotherapist')
-        .snapshots(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      }
+  Widget _buildDoctorsList(FavoritesController favoritesController) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('doctors')
+          .where('isAccepted', isEqualTo: true)
+          .where('category', isEqualTo: 'Physiotherapist')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-        return const Center(child: Text('No Physiotherapist found'));
-      }
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('No Physiotherapist found'));
+        }
 
-      return ListView.builder(
-        itemCount: snapshot.data!.docs.length,
-        itemBuilder: (context, index) {
-          final doc = snapshot.data!.docs[index];
-          return _buildDoctorCard(doc);
-        },
-      );
-    },
-  );
-}
+        return ListView.builder(
+          itemCount: snapshot.data!.docs.length,
+          itemBuilder: (context, index) {
+            final doc = snapshot.data!.docs[index];
+            return _buildDoctorCard(doc, favoritesController);
+          },
+        );
+      },
+    );
+  }
 
-Widget _buildDoctorCard(QueryDocumentSnapshot doc) {
-  final data = doc.data() as Map<String, dynamic>;
-  return Container(
-    margin: const EdgeInsets.only(bottom: 16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.shade200,
-          blurRadius: 4,
-          offset: const Offset(0, 2),
+  Widget _buildDoctorCard(QueryDocumentSnapshot doc, FavoritesController favoritesController) {
+    final data = doc.data() as Map<String, dynamic>;
+
+    return Obx(() {
+      final isFavorite = favoritesController.isFavorite(doc.id);
+
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.shade200,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-      ],
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(12),
-      child: Stack(
-        children: [
-          Row(
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Stack(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  data['image'] ?? '',
-                  width: 60,
-                  height: 60,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    width: 60,
-                    height: 60,
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.person),
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      data['image'] ?? '',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 60,
+                        height: 60,
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.person),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          data['fullName'] ?? '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.favorite_border,
-                            color: Colors.blue[400],
-                          ),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '${data['category']} | ${data['hospitalName']} Hospital',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 13,
-                      ),
-                    ),
-                    Text(
-                      '${data['yearsOfExperience']} Years of experience',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 13,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on,
-                            size: 16, color: Colors.grey),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            '${data['location']}',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 13,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              data['fullName'] ?? '',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              icon: Icon(
+                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                color: isFavorite ? Colors.blue : Colors.blue[400],
+                              ),
+                              onPressed: () => favoritesController.toggleFavorite(doc.id),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 16),
-                        const SizedBox(width: 4),
                         Text(
-                          '4.3',
+                          '${data['category']} | ${data['hospitalName']} Hospital',
                           style: TextStyle(
-                            color: Colors.grey[700],
+                            color: Colors.grey[600],
                             fontSize: 13,
                           ),
                         ),
-                        const SizedBox(width: 4),
                         Text(
-                          '(3,837 reviews)',
+                          '${data['yearsOfExperience']} Years of experience',
                           style: TextStyle(
-                            color: Colors.grey[500],
+                            color: Colors.grey[600],
                             fontSize: 13,
                           ),
                         ),
+                        Row(
+                          children: [
+                            const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                '${data['location']}',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              '4.3',
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 13,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '(3,837 reviews)',
+                              style: TextStyle(
+                                color: Colors.grey[500],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(
+                      () => DoctorProfileView(
+                        data: data,
+                      ),
+                      transition: Transition.rightToLeftWithFade,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4A78FF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                  child: const Text(
+                    'Connect',
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  ),
                 ),
               ),
             ],
           ),
-          Positioned(
-            bottom: 10,
-            right: 10,
-            child: ElevatedButton(
-              onPressed: () {Get.to(()=>DoctorProfileView(data: data,),
-                  transition: Transition.rightToLeftWithFade);  },
-              style: ElevatedButton.styleFrom( 
-                backgroundColor: const Color(0xFF4A78FF),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
-              child: const Text(
-                'Connect',
-                style: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
+    });
+  }
 }
+ 
