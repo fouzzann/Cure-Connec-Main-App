@@ -28,12 +28,12 @@ class AppointmentController extends GetxController {
       appointmentId.value = docRef.id;
       isLoading.value = false;
 
-      Get.snackbar(
-        'Success',
-        'Appointment booked successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      // Get.snackbar(
+      //   'Success', 
+      //   'Appointment booked successfully',
+      //   backgroundColor: Colors.green,
+      //   colorText: Colors.white,
+      // );
     } catch (e) {
       isLoading.value = false;
       errorMessage.value = 'Failed to book appointment';

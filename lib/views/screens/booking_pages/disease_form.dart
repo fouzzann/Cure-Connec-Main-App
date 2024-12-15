@@ -1,20 +1,23 @@
-import 'package:cure_connect_service/services/stripe_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
-
 import 'package:cure_connect_service/controllers/appointment_controller.dart';
 import 'package:cure_connect_service/model/appointment_model.dart';
+import 'package:cure_connect_service/services/stripe_services.dart';
+import 'package:cure_connect_service/views/screens/payment/payment_successfull_page.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+
 
 class DiseaseForm extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;
   final String drEmail;
+
   DiseaseForm({
     Key? key, 
     required this.selectedDate, 
-    required this.selectedTime, required this.drEmail
+    required this.selectedTime, 
+    required this.drEmail,
   }) : super(key: key);
 
   final _formKey = GlobalKey<FormState>();
@@ -22,12 +25,14 @@ class DiseaseForm extends StatelessWidget {
   final TextEditingController _diseaseController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final ValueNotifier<String> _genderNotifier = ValueNotifier<String>('Male');
-  // final TextEditingController _drGmail =TextEditingController();
- final FirebaseAuth _auth =FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Track if the appointment is booked
+  RxBool isBooked = false.obs;
+
   @override
   Widget build(BuildContext context) {
     final AppointmentController appointmentController = Get.put(AppointmentController());
-
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -35,12 +40,12 @@ class DiseaseForm extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, ),
+          icon: Icon(Icons.arrow_back_ios_new),
           onPressed: () => Get.back(),
         ),
         title: Text(
           'Patient Details',
-          style:TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -55,7 +60,7 @@ class DiseaseForm extends StatelessWidget {
               children: [
                 Text(
                   'Complete Your Booking',
-                  style:TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: Colors.black87,
@@ -64,12 +69,12 @@ class DiseaseForm extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text(
                   'Appointment on ${selectedDate.toLocal().toString().split(' ')[0]} at $selectedTime',
-                  style:TextStyle(
+                  style: TextStyle(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 24),      
+                const SizedBox(height: 24),
                 
                 // Name Input
                 _buildTextField(
@@ -87,7 +92,7 @@ class DiseaseForm extends StatelessWidget {
                 const SizedBox(height: 16),
                 
                 // Gender Selector
-                ValueListenableBuilder<String>(
+                ValueListenableBuilder<String>( 
                   valueListenable: _genderNotifier,
                   builder: (context, currentGender, child) {
                     return Container(
@@ -111,7 +116,7 @@ class DiseaseForm extends StatelessWidget {
                                       child: Center(
                                         child: Text(
                                           gender,
-                                          style:TextStyle(
+                                          style: TextStyle(
                                             color: currentGender == gender 
                                                 ? Colors.white 
                                                 : Colors.black,
@@ -167,58 +172,52 @@ class DiseaseForm extends StatelessWidget {
                 
                 const SizedBox(height: 32),
                 
-                // Submit Button
-                ElevatedButton(
-                  onPressed: () async {      
-                    await StripeServices.instance.makePayment();
-                    if (_formKey.currentState!.validate()) {
-                      AppointmentModel appointment = AppointmentModel(
-                        drEmail :drEmail,
-                        name: _nameController.text,
-                        gender: _genderNotifier.value,  
-                        age: int.parse(_ageController.text),
-                        disease: _diseaseController.text,
-                        appointmentDate: selectedDate,
-                        appointmentTime: selectedTime,
-                        userEmail : _auth.currentUser!.email.toString(),
-                        status: 'upcoming'
-                      );
-                      await appointmentController.addAppointment(appointment);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom( 
-                    backgroundColor:Color(0xFF4A78FF),
-                    padding: const EdgeInsets.symmetric(vertical: 16), 
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text( 
-                    'Book',     
-                    style: TextStyle(
-                      color: Colors.white,  
-                      fontSize: 16, 
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-                
-                const SizedBox(height: 16),
-                
-                // Loading and Error Indicators
+                // Book/Finish Button
                 Obx(() {
-                  if (appointmentController.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (appointmentController.errorMessage.value.isNotEmpty) {
-                    return Center(
-                      child: Text(
-                        appointmentController.errorMessage.value,
-                        style: TextStyle(color: Colors.red),
+                  return ElevatedButton(
+                    onPressed: () async {
+                      if (!isBooked.value) {
+                        // Book the appointment
+                        StripeServices.instance.makePayment();
+                        if (_formKey.currentState!.validate()) {
+                          AppointmentModel appointment = AppointmentModel(
+                            drEmail: drEmail,
+                            name: _nameController.text,
+                            gender: _genderNotifier.value,
+                            age: int.parse(_ageController.text),
+                            disease: _diseaseController.text,
+                            appointmentDate: selectedDate,
+                            appointmentTime: selectedTime,
+                            userEmail: _auth.currentUser!.email.toString(),
+                            status: 'upcoming',
+                          );
+                          await appointmentController.addAppointment(appointment);
+                          isBooked.value = true; // Set the appointment as booked
+                        } 
+                      } else {
+                        // Clear the form data and navigate to the success page
+                        _nameController.clear();
+                        _diseaseController.clear();
+                        _ageController.clear();
+                        _genderNotifier.value = 'Male'; // Reset gender to default
+                        Get.to(() => PaymentSuccessPage());
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF4A78FF),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    );
-                  }
-                  return const SizedBox.shrink();
+                    ),
+                    child: Text(
+                      isBooked.value ? 'Finish' : 'Book Appointment',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  );
                 }),
               ],
             ),
@@ -232,34 +231,25 @@ class DiseaseForm extends StatelessWidget {
     required TextEditingController controller,
     required String label,
     required IconData icon,
-    required String? Function(String?)? validator,
+    String? Function(String?)? validator,
     TextInputType keyboardType = TextInputType.text,
     List<TextInputFormatter>? inputFormatters,
-    int maxLines = 1,
+    int? maxLines,
   }) {
     return TextFormField(
       controller: controller,
-      validator: validator,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      maxLines: maxLines,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: InputDecoration( 
+      decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.grey[600]),   
+        labelStyle: TextStyle(color: Colors.grey),
+        prefixIcon: Icon(icon, color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ), 
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300), 
-        ),
-        focusedBorder: OutlineInputBorder( 
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Color(0xFF4A78FF), width: 2), 
         ),
       ),
+      keyboardType: keyboardType,
+      validator: validator,
+      inputFormatters: inputFormatters,
+      maxLines: maxLines ?? 1,
     );
   }
 }

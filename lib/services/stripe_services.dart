@@ -8,17 +8,21 @@ class StripeServices {
   StripeServices._();
   static final StripeServices instance = StripeServices._();
    
-  Future<void> makePayment() async {
+  Future<bool> makePayment() async {
     try {
-      String? paymentIntentClientSecret = await _createPaymentIntent(10, "usd");
-      if (paymentIntentClientSecret == null) return ;
+      String? paymentIntentClientSecret = await _createPaymentIntent(1330, "usd");  
+      if (paymentIntentClientSecret == null) return false;
+      
       await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentIntentClientSecret,
               merchantDisplayName: "fouzan"));
-              await _proccesPayment();
+      
+      // Return the result of payment processing
+      return await _processPayment();
     } catch (e) {
       log(e.toString());
+      return false;
     }
   }   
 
@@ -31,29 +35,35 @@ class StripeServices {
       };
       var response = await dio.post("https://api.stripe.com/v1/payment_intents",
           data: data,
-          options:
-              Options(contentType: Headers.formUrlEncodedContentType, headers: {
-            'Authorization': 'Bearer ${stripeSecretKey}',
-            'content-Type': 'application/x-ww-form-urlencoded'
-          }));
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType, 
+            headers: {
+              'Authorization': 'Bearer ${stripeSecretKey}',
+              'content-Type': 'application/x-www-form-urlencoded'
+            }
+          )
+      );
+      
       if (response.data != null) {
         return response.data["client_secret"];
       }
       return null;
     } catch (e) {
-      print(e);
+      log(e.toString());
+      return null;
     }
-    return null;
   }
 
-  Future <void> _proccesPayment()async{
+  Future<bool> _processPayment() async {
     try {
-      await Stripe.instance.presentPaymentSheet();
+      await Stripe.instance.presentPaymentSheet(); 
       await Stripe.instance.confirmPaymentSheetPayment();
+      return true;
     } catch (e) {
-      print(e);
+      log(e.toString());
+      return false;
     }
-    }
+  }
 
   String _calculateAmount(int amount) {
     final calculatedAmount = amount * 100;
