@@ -1,3 +1,4 @@
+import 'package:cure_connect_service/services/stripe_services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -168,12 +169,13 @@ class DiseaseForm extends StatelessWidget {
                 
                 // Submit Button
                 ElevatedButton(
-                  onPressed: () async {
+                  onPressed: () async {      
+                    await StripeServices.instance.makePayment();
                     if (_formKey.currentState!.validate()) {
                       AppointmentModel appointment = AppointmentModel(
                         drEmail :drEmail,
                         name: _nameController.text,
-                        gender: _genderNotifier.value, 
+                        gender: _genderNotifier.value,  
                         age: int.parse(_ageController.text),
                         disease: _diseaseController.text,
                         appointmentDate: selectedDate,
@@ -242,9 +244,9 @@ class DiseaseForm extends StatelessWidget {
       inputFormatters: inputFormatters,
       maxLines: maxLines,
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: InputDecoration(
+      decoration: InputDecoration( 
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.grey[600]),
+        prefixIcon: Icon(icon, color: Colors.grey[600]),   
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.grey.shade300),

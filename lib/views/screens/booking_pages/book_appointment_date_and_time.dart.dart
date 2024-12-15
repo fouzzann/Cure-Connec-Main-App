@@ -235,6 +235,7 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
             selectedDate: selectedDate,
             selectedTime: selectedTime!,
             drEmail: widget.drEmail,
+          
           ), 
           transition: Transition.rightToLeftWithFade);
         } : null, 
