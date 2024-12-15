@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
 
+// ignore: must_be_immutable
 class DiseaseForm extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;

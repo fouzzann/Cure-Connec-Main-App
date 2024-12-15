@@ -1,4 +1,3 @@
-import 'package:cure_connect_service/model/doctor_model.dart';
 import 'package:cure_connect_service/views/screens/home_page/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +105,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
               child: Center(
                 child: AnimatedBuilder(
                   animation: _animationController,
-                  builder: (context, child) {
+                  builder: (context, child) { 
                     return Transform.scale(    
                       scale: _scaleAnimation.value,
                       child: Opacity(
