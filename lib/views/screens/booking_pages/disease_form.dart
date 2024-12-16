@@ -9,7 +9,6 @@ import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
-// ignore: must_be_immutable
 class DiseaseForm extends StatelessWidget {
   final DateTime selectedDate;
   final String selectedTime;
@@ -30,9 +29,7 @@ class DiseaseForm extends StatelessWidget {
   final TextEditingController _ageController = TextEditingController();
   final ValueNotifier<String> _genderNotifier = ValueNotifier<String>('Male');
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final AppointmentController appointmentController =
-      Get.put(AppointmentController());
-  // Track if the appointment is booked
+  final AppointmentController appointmentController = Get.put(AppointmentController());
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +39,10 @@ class DiseaseForm extends StatelessWidget {
         elevation: 0,
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () => Get.back(),
         ),
-        title: Text(
+        title: const Text(
           'Patient Details',
           style: TextStyle(
             fontWeight: FontWeight.bold,
@@ -57,10 +54,11 @@ class DiseaseForm extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Form(
             key: _formKey,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
+                const Text(
                   'Complete Your Booking',
                   style: TextStyle(
                     fontSize: 24,
@@ -87,6 +85,16 @@ class DiseaseForm extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your name';
                     }
+                    if (value.length < 2) {
+                      return 'Name must be at least 2 characters';
+                    }
+                    if (value.length > 50) {
+                      return 'Name cannot exceed 50 characters';
+                    }
+                    // Check if name contains only letters and spaces
+                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                      return 'Name can only contain letters and spaces';
+                    }
                     return null;
                   },
                 ),
@@ -108,11 +116,10 @@ class DiseaseForm extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () => _genderNotifier.value = gender,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 12),
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
                                       decoration: BoxDecoration(
                                         color: currentGender == gender
-                                            ? Color(0xFF4A78FF)
+                                            ? const Color(0xFF4A78FF)
                                             : Colors.transparent,
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -144,14 +151,23 @@ class DiseaseForm extends StatelessWidget {
                   label: 'Your Age',
                   icon: Icons.cake_outlined,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(3),
+                  ],
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your age';
                     }
                     final age = int.tryParse(value);
-                    if (age == null || age <= 0 || age > 120) {
-                      return 'Please enter a valid age';
+                    if (age == null) {
+                      return 'Please enter a valid number';
+                    }
+                    if (age < 1) {
+                      return 'Age cannot be less than 1';
+                    }
+                    if (age > 120) {
+                      return 'Age cannot be more than 120';
                     }
                     return null;
                   },
@@ -169,52 +185,63 @@ class DiseaseForm extends StatelessWidget {
                     if (value == null || value.isEmpty) {
                       return 'Please describe your symptoms';
                     }
+                    if (value.length < 10) {
+                      return 'Please provide more details (at least 10 characters)';
+                    }
+                    if (value.length > 1000) {
+                      return 'Description cannot exceed 500 characters';
+                    }
                     return null;
                   },
                 ),
 
                 const SizedBox(height: 32),
 
-                // Book/Finish Button
-                // Obx(() {
-                //   return
-                // }),
+                // Book Appointment Button
                 ElevatedButton(
                   onPressed: () async {
-                    bool isBooked = false;
                     if (_formKey.currentState!.validate()) {
-                      isBooked = await StripeServices.instance
-                          .makePayment(consultationFee: fee);
-                      log('status${isBooked.toString()}');
-                      if (isBooked) {
-                        AppointmentModel appointment = AppointmentModel(
-                          drEmail: drEmail,
-                          name: _nameController.text,
-                          gender: _genderNotifier.value,
-                          age: int.parse(_ageController.text),
-                          disease: _diseaseController.text,
-                          appointmentDate: selectedDate,
-                          appointmentTime: selectedTime,
-                          userEmail: _auth.currentUser!.email.toString(),
-                          status: 'upcoming',
+                      try {
+                        bool isBooked = await StripeServices.instance
+                            .makePayment(consultationFee: fee);
+                        log('Payment status: ${isBooked.toString()}');
+                        
+                        if (isBooked) {
+                          AppointmentModel appointment = AppointmentModel(
+                            drEmail: drEmail,
+                            name: _nameController.text.trim(),
+                            gender: _genderNotifier.value,
+                            age: int.parse(_ageController.text),
+                            disease: _diseaseController.text.trim(),
+                            appointmentDate: selectedDate,
+                            appointmentTime: selectedTime,
+                            userEmail: _auth.currentUser!.email.toString(),
+                            status: 'upcoming',
+                          );
+                          
+                          await appointmentController.addAppointment(appointment);
+                          _clearForm();
+                          Get.to(() => const PaymentSuccessPage());
+                        }
+                      } catch (e) {
+                        log('Error booking appointment: $e');
+                        Get.snackbar(
+                          'Error',
+                          'Failed to book appointment. Please try again.',
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
                         );
-                        await appointmentController.addAppointment(appointment);
-                        _nameController.clear();
-                        _diseaseController.clear();
-                        _ageController.clear();
-                        _genderNotifier.value = 'Male';
-                        Get.to(() => PaymentSuccessPage());
                       }
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF4A78FF),
+                    backgroundColor: const Color(0xFF4A78FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Book Appointment',
                     style: TextStyle(
                       color: Colors.white,
@@ -230,6 +257,13 @@ class DiseaseForm extends StatelessWidget {
     );
   }
 
+  void _clearForm() {
+    _nameController.clear();
+    _diseaseController.clear();
+    _ageController.clear();
+    _genderNotifier.value = 'Male';
+  }
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -240,19 +274,38 @@ class DiseaseForm extends StatelessWidget {
     int? maxLines,
   }) {
     return TextFormField(
+      
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         prefixIcon: Icon(icon, color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Color(0xFF4A78FF)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ), 
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
       ),
+      
       keyboardType: keyboardType,
       validator: validator,
       inputFormatters: inputFormatters,
       maxLines: maxLines ?? 1,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

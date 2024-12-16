@@ -2,9 +2,10 @@ import 'dart:developer';
 
 import 'package:cure_connect_service/model/doctor_model.dart';
 import 'package:cure_connect_service/model/user_appointment_history_model.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart';  
 import 'package:cure_connect_service/model/appointment_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -53,27 +54,45 @@ class AppointmentController extends GetxController {
   }
 
   getUserAppointmentHistory(String email) async {
-    try {
-      // fetch History
-      final QuerySnapshot querySnapshot = await db
-          .collection('appointment')
-          .where('userEmail', isEqualTo: email)
-          .get();
-      final List<AppointmentModel> appointmentList =
-          querySnapshot.docs.map((appointment) {
-        return AppointmentModel.fromMap(
-            appointment.data() as Map<String, dynamic>, appointment.id);
-      }).toList();
-      // fetch dr
-      for (AppointmentModel element in appointmentList) {
-        final DocumentSnapshot documentSnapshot =
-            await db.collection('doctors').doc(element.drEmail).get();
-            final Doctor doctorModel = Doctor.fromMap(documentSnapshot.data() as Map<String,dynamic>);
-            history.add( UserAppointmentHistoryModel(appointmentModel: element, doctorModel: doctorModel));
-      }
-      log(history.toString());
-    } catch (e) {
-      log(e.toString());
+  try {
+    // Set loading to true before fetching
+    isLoading.value = true;
+
+    // Clear existing history to prevent duplicates
+    history.clear();
+
+    // Fetch History
+    final QuerySnapshot querySnapshot = await db
+        .collection('appointment')
+        .where('userEmail', isEqualTo: email)
+        .get();
+
+    final List<AppointmentModel> appointmentList =
+        querySnapshot.docs.map((appointment) {
+      return AppointmentModel.fromMap(
+          appointment.data() as Map<String, dynamic>, appointment.id);
+    }).toList();
+
+    // Fetch doctors for each appointment
+    for (AppointmentModel element in appointmentList) {
+      final DocumentSnapshot documentSnapshot =
+          await db.collection('doctors').doc(element.drEmail).get();
+      
+      final Doctor doctorModel = Doctor.fromMap(
+          documentSnapshot.data() as Map<String, dynamic>);
+      
+      history.add(UserAppointmentHistoryModel(
+        appointmentModel: element, 
+        doctorModel: doctorModel
+      ));
     }
+
+    log('Appointment History: ${history.length} appointments');
+  } catch (e) {
+    log('Error fetching appointment history: $e');
+  } finally {
+    // Set loading to false after fetching, whether successful or not
+    isLoading.value = false;
   }
+}
 }
