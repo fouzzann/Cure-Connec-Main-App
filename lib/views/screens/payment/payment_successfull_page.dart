@@ -10,19 +10,18 @@ class PaymentSuccessPage extends StatefulWidget {
   _PaymentSuccessPageState createState() => _PaymentSuccessPageState();
 }
 
-class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTickerProviderStateMixin {
+class _PaymentSuccessPageState extends State<PaymentSuccessPage>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
 
-  // Primary color from the theme
   static const Color primaryColor = Color(0xFF4A78FF);
 
   @override
   void initState() {
     super.initState();
-    
-    // Set status bar and navigation bar colors for a modern look
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
@@ -30,13 +29,11 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    // Animation controller setup
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
 
-    // Scale animation for the success icon
     _scaleAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -44,7 +41,6 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
       ),
     );
 
-    // Fade animation for text elements
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
@@ -52,7 +48,6 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
       ),
     );
 
-    // Start the animations
     _animationController.forward();
   }
 
@@ -69,7 +64,6 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
       body: SafeArea(
         child: Column(
           children: [
-            // Modern App Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               decoration: BoxDecoration(
@@ -95,25 +89,23 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
                   const Spacer(),
                   IconButton(
                     icon: Icon(Icons.close, color: Colors.black54),
-                    onPressed: () => Get.to(()=> HomePage()),
+                    onPressed: () => Get.to(() => HomePage()),
                   ),
                 ],
               ),
             ),
-
             Expanded(
               child: Center(
                 child: AnimatedBuilder(
                   animation: _animationController,
-                  builder: (context, child) { 
-                    return Transform.scale(    
+                  builder: (context, child) {
+                    return Transform.scale(
                       scale: _scaleAnimation.value,
                       child: Opacity(
                         opacity: _fadeAnimation.value,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Animated Success Icon
                             Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
@@ -140,10 +132,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
                                 size: 80,
                               ),
                             ),
-
                             const SizedBox(height: 32),
-
-                            // Main Success Message
                             Text(
                               'Payment Successful',
                               style: TextStyle(
@@ -154,12 +143,10 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
                               ),
                               textAlign: TextAlign.center,
                             ),
-
                             const SizedBox(height: 16),
-
-                            // Subtext
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 24),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 24),
                               child: Text(
                                 'Your payment has been processed successfully. '
                                 'Thank you for your purchase!',
@@ -179,8 +166,6 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
                 ),
               ),
             ),
-
-            // Bottom Action Buttons with Modern Design
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -195,7 +180,6 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
               ),
               child: Column(
                 children: [
-                  // Primary Action Button
                   ElevatedButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -224,17 +208,15 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage> with SingleTick
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Secondary Action Button
                   OutlinedButton(
                     onPressed: () => Navigator.of(context)
                         .popUntil((route) => route.isFirst),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: primaryColor,
                       minimumSize: const Size(double.infinity, 56),
-                      side: BorderSide(color: primaryColor.withOpacity(0.3), width: 2),
+                      side: BorderSide(
+                          color: primaryColor.withOpacity(0.3), width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

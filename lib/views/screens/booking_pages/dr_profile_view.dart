@@ -172,7 +172,9 @@ class DoctorProfileView extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>AppointmentBookingDateAndTime(drEmail:data['email'],), 
+                    Get.to(()=>AppointmentBookingDateAndTime(drEmail:data['email'],
+                    fee: data['consultationFee'],
+                    ), 
                     transition: Transition.rightToLeftWithFade); 
                   },
                   style: ElevatedButton.styleFrom( 

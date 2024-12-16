@@ -7,24 +7,26 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 class StripeServices {
   StripeServices._();
   static final StripeServices instance = StripeServices._();
-   
-  Future<bool> makePayment() async {
+
+  Future<bool> makePayment({required String consultationFee}) async {
     try {
-      String? paymentIntentClientSecret = await _createPaymentIntent(1330, "usd");  
+      String? paymentIntentClientSecret =
+          await _createPaymentIntent(int.parse(consultationFee), "inr"); 
       if (paymentIntentClientSecret == null) return false;
-      
+
       await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentIntentClientSecret,
               merchantDisplayName: "fouzan"));
-      
+
       // Return the result of payment processing
+
       return await _processPayment();
     } catch (e) {
       log(e.toString());
       return false;
     }
-  }   
+  }
 
   Future<String?> _createPaymentIntent(int amount, String currency) async {
     try {
@@ -35,15 +37,12 @@ class StripeServices {
       };
       var response = await dio.post("https://api.stripe.com/v1/payment_intents",
           data: data,
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType, 
-            headers: {
-              'Authorization': 'Bearer ${stripeSecretKey}',
-              'content-Type': 'application/x-www-form-urlencoded'
-            }
-          )
-      );
-      
+          options:
+              Options(contentType: Headers.formUrlEncodedContentType, headers: {
+            'Authorization': 'Bearer ${stripeSecretKey}',
+            'content-Type': 'application/x-www-form-urlencoded'
+          }));
+
       if (response.data != null) {
         return response.data["client_secret"];
       }
@@ -56,8 +55,8 @@ class StripeServices {
 
   Future<bool> _processPayment() async {
     try {
-      await Stripe.instance.presentPaymentSheet(); 
-      await Stripe.instance.confirmPaymentSheetPayment();
+      await Stripe.instance.presentPaymentSheet();
+      // await Stripe.instance.confirmPaymentSheetPayment();
       return true;
     } catch (e) {
       log(e.toString());

@@ -1,29 +1,26 @@
+import 'package:cure_connect_service/controllers/appointment_controller.dart';
+import 'package:cure_connect_service/model/user_appointment_history_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class AppointmentPage extends StatelessWidget {
+class AppointmentPage extends StatefulWidget {
   AppointmentPage({super.key});
-  
-  final List<Map<String, dynamic>> doctors = [
-    {
-      'name': 'Dr. Donald Mathew',
-      'specialty': 'Neurologist',
-      'hospital': 'Almas Hospital',
-      'time': '4:45 PM',
-      'date': '7/03/2024',
-      'rating': 4,
-      'status': 'Upcoming'
-    },
-    {
-      'name': 'Dr. Fariz',
-      'specialty': 'Physiotherapist',
-      'hospital': 'Almas Hospital',
-      'time': '4:45 PM',
-      'date': '7/03/2024',
-      'rating': 5,
-      'status': 'Upcoming'
-    },
-  ];
 
+  @override
+  State<AppointmentPage> createState() => _AppointmentPageState();
+}
+
+class _AppointmentPageState extends State<AppointmentPage> {
+  final AppointmentController appointmentController=Get.put(AppointmentController()); 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero , () async{
+      appointmentController.getUserAppointmentHistory(_auth.currentUser!.email.toString());
+    },);
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,11 +39,13 @@ class AppointmentPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ListView.builder(
+      body: Obx(() {
+        return 
+         ListView.builder( 
         padding: const EdgeInsets.all(20),
-        itemCount: doctors.length,
+        itemCount:appointmentController.history.length,
         itemBuilder: (context, index) {
-          final doctor = doctors[index];
+          final UserAppointmentHistoryModel doctor =appointmentController.history[index]; 
           return Container(
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
@@ -76,8 +75,8 @@ class AppointmentPage extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            'assets/Donex Fiance.webp',
+                          child: Image.network( 
+                           doctor.doctorModel.image,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) {
                               return const Icon(
@@ -95,7 +94,7 @@ class AppointmentPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              doctor['name'] ?? 'Unknown Doctor',
+                             doctor.doctorModel.fullName,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -104,7 +103,7 @@ class AppointmentPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              doctor['specialty'] ?? 'Specialty not specified',
+                               doctor.doctorModel.category,
                               style: TextStyle(
                                 fontSize: 15,
                                 color: Colors.grey[600],
@@ -134,19 +133,19 @@ class AppointmentPage extends StatelessWidget {
                         _buildInfoColumn(
                           Icons.access_time_rounded,
                           'Time',
-                          doctor['time'] ?? '--:--',
+                          doctor.appointmentModel.appointmentTime,
                         ),
                         const SizedBox(width: 24),
                         _buildInfoColumn(
                           Icons.calendar_today_rounded,
                           'Date',
-                          doctor['date'] ?? '--/--/----',
+                        doctor.appointmentModel.appointmentTime,
                         ),
                         const SizedBox(width: 24),
                         _buildInfoColumn(
                           Icons.star_rounded,
                           'Rating',
-                          '${doctor['rating'] ?? 0}.0',
+                          '0.3',
                         ),
                       ],
                     ),
@@ -166,7 +165,7 @@ class AppointmentPage extends StatelessWidget {
                           ),
                           child: Text(
                             'Cancel',
-                            style: TextStyle(
+                            style: TextStyle(     
                               color: Colors.grey[700],
                               fontWeight: FontWeight.w600,
                             ),
@@ -200,8 +199,10 @@ class AppointmentPage extends StatelessWidget {
               ),
             ),
           );
-        },
-      ),
+        });
+      
+      
+      },)
     );
   }
 

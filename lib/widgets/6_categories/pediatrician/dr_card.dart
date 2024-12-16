@@ -3,7 +3,6 @@ import 'package:cure_connect_service/controllers/favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class PediatricianDoctorCard extends StatelessWidget {
   final QueryDocumentSnapshot doc;

@@ -4,28 +4,43 @@ import 'package:intl/intl.dart';
 import 'disease_form.dart'; // Import the disease form page
 
 class AppointmentBookingDateAndTime extends StatefulWidget {
-  const AppointmentBookingDateAndTime({Key? key, required this.drEmail}) : super(key: key);
-   final String drEmail;
+  const AppointmentBookingDateAndTime(
+      {Key? key, required this.drEmail, required this.fee})
+      : super(key: key);
+  final String drEmail;
+  final String fee;
   @override
-  State<AppointmentBookingDateAndTime> createState() => _AppointmentBookingDateAndTimeState();
+  State<AppointmentBookingDateAndTime> createState() =>
+      _AppointmentBookingDateAndTimeState();
 }
 
-class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAndTime> {
+class _AppointmentBookingDateAndTimeState
+    extends State<AppointmentBookingDateAndTime> {
   DateTime selectedDate = DateTime.now();
   final DateTime today = DateTime.now();
   String? selectedTime;
 
   final List<String> timeSlots = [
-    '9:00 AM', '9:30 AM', '10:00 AM',
-    '10:30 AM', '11:00 AM', '11:30 AM',
-    '12:00 PM', '12:30 PM', '1:00 PM',
-    '1:30 PM', '2:00 PM', '2:30 PM',
-    '3:00 PM', '3:30 PM', '4:00 PM'
+    '9:00 AM',
+    '9:30 AM',
+    '10:00 AM',
+    '10:30 AM',
+    '11:00 AM',
+    '11:30 AM',
+    '12:00 PM',
+    '12:30 PM',
+    '1:00 PM',
+    '1:30 PM',
+    '2:00 PM',
+    '2:30 PM',
+    '3:00 PM',
+    '3:30 PM',
+    '4:00 PM'
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -33,10 +48,10 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
-        ), 
+        ),
         title: const Text(
-          'Select Date and Time', 
-          style:TextStyle(
+          'Select Date and Time',
+          style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -72,7 +87,7 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
       ),
     );
   }
- 
+
   Widget _buildCalendar() {
     return Container(
       decoration: BoxDecoration(
@@ -93,7 +108,8 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: Color(0xFF4A78FF).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -131,7 +147,8 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
             ),
             itemCount: 31,
             itemBuilder: (context, index) {
-              final currentDate = DateTime(selectedDate.year, selectedDate.month, index + 1);
+              final currentDate =
+                  DateTime(selectedDate.year, selectedDate.month, index + 1);
               final isToday = currentDate.year == today.year &&
                   currentDate.month == today.month &&
                   currentDate.day == today.day;
@@ -199,7 +216,7 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
       itemBuilder: (context, index) {
         final timeSlot = timeSlots[index];
         final isSelected = selectedTime == timeSlot;
-        
+
         return InkWell(
           onTap: () {
             setState(() {
@@ -208,52 +225,52 @@ class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAn
           },
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Color(0xFF4A78FF)), 
+              border: Border.all(color: Color(0xFF4A78FF)),
               borderRadius: BorderRadius.circular(25),
-              color: isSelected ? Color(0xFF4A78FF)  : Colors.transparent,
+              color: isSelected ? Color(0xFF4A78FF) : Colors.transparent,
             ),
             alignment: Alignment.center,
             child: Text(
               timeSlot,
               style: TextStyle(
-                color: isSelected ? Colors.white :Color(0xFF4A78FF),
+                color: isSelected ? Colors.white : Color(0xFF4A78FF),
                 fontWeight: FontWeight.w500,
               ),
             ),
           ),
         );
       },
-    ); 
+    );
   }
 
   Widget _buildNextButton() {
     return SizedBox(
-      width: double.infinity, 
+      width: double.infinity,
       child: ElevatedButton(
-        onPressed: selectedTime != null ? () {
-          Get.to(() => DiseaseForm(
-            selectedDate: selectedDate,
-            selectedTime: selectedTime!,
-            drEmail: widget.drEmail,
-          
-          ), 
-          transition: Transition.rightToLeftWithFade);
-        } : null, 
+        onPressed: selectedTime != null
+            ? () {
+                Get.to(
+                    () => DiseaseForm(
+                          selectedDate: selectedDate,
+                          selectedTime: selectedTime!,
+                          drEmail: widget.drEmail,
+                          fee: widget.fee,
+                        ),
+                    transition: Transition.rightToLeftWithFade);
+              }
+            : null,
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFF4A78FF),
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
           ),
-        ), 
-        child: const Text( 
+        ),
+        child: const Text(
           'Next',
-          style: TextStyle(  
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.white 
-          ),
-        ),     
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+        ),
       ),
     );
   }
