@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'disease_form.dart'; // Import the disease form page
+import 'disease_form.dart';
 
 class AppointmentBookingDateAndTime extends StatefulWidget {
   const AppointmentBookingDateAndTime(
@@ -19,7 +19,6 @@ class _AppointmentBookingDateAndTimeState
   DateTime selectedDate = DateTime.now();
   final DateTime today = DateTime.now();
   String? selectedTime;
-
   final List<String> timeSlots = [
     '9:00 AM',
     '9:30 AM',

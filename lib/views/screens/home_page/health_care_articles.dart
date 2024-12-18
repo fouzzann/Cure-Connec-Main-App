@@ -1,4 +1,8 @@
+import 'package:cure_connect_service/views/screens/health_care_articles/10_health_eating_habits.dart';
+import 'package:cure_connect_service/views/screens/health_care_articles/fitness_tips_and_busy_people.dart';
+import 'package:cure_connect_service/views/screens/health_care_articles/mental_health.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HealthCareArticles extends StatelessWidget {
   @override
@@ -39,18 +43,21 @@ class HealthCareArticles extends StatelessWidget {
                 title: '10 Healthy Eating Habits',
                 imageUrl: 'assets/healthy food image.png',
                 readTime: '5 min read',
+                index: 0,
               ),
               SizedBox(width: 16),
               _buildHealthNewsCard(
                 title: 'Mental Health Awareness',
                 imageUrl: 'assets/mental health image.png',
                 readTime: '4 min read',
+                index: 1,
               ),
               SizedBox(width: 16),
               _buildHealthNewsCard(
                 title: 'Fitness Tips for Busy People',
                 imageUrl: 'assets/fitness 2.png',
                 readTime: '3 min read',
+                index: 2,
               ),
             ],
           ),
@@ -59,10 +66,25 @@ class HealthCareArticles extends StatelessWidget {
     );
   }
 
+  void _navigateToArticle(int index) {
+    switch (index) {
+      case 0:
+        Get.to(() => HealthyEatingHabits());
+        break;
+      case 1:
+        Get.to(() => MentalHealth());  
+        break;
+      case 2:
+        Get.to(() => FitnessTipsPage()); 
+        break;
+    }
+  }
+
   Widget _buildHealthNewsCard({
     required String title,
     required String imageUrl,
     required String readTime,
+    required int index,
   }) {
     return Container(
       width: 250,
@@ -127,19 +149,17 @@ class HealthCareArticles extends StatelessWidget {
                         color: Colors.grey,
                       ),
                     ),
-                    InkWell(
-                        onTap: () {},
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Read More',
-                            style: TextStyle(
-                              color: Color(0xFF4A78FF),
-                              fontWeight: FontWeight.w500,
-                              fontSize: 12,
-                            ),
-                          ),
-                        )),
+                    TextButton(
+                      onPressed: () => _navigateToArticle(index),
+                      child: Text(
+                        'Read More',
+                        style: TextStyle(
+                          color: Color(0xFF4A78FF),
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -150,3 +170,4 @@ class HealthCareArticles extends StatelessWidget {
     );
   }
 }
+
