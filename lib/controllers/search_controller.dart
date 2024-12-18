@@ -1,18 +1,64 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class SearchDrController extends GetxController {
   final TextEditingController searchController = TextEditingController();
   final RxList<DocumentSnapshot> users = <DocumentSnapshot>[].obs;
   final RxList<String> categories = <String>[].obs;
   final RxBool isLoading = false.obs;
-  final RxnString selectedCategory = RxnString(); // Use RxnString for nullable reactive variables.
+  final RxnString selectedCategory = RxnString();
+  Timer? _debounceTimer;
 
   @override
   void onInit() {
     super.onInit();
     loadCategories();
+    restoreSearchState();
+
+    // Automatically search when category changes
+    ever(selectedCategory, (_) {
+      searchUsers(searchController.text);
+    });
+  }
+
+  @override
+  void onClose() {
+    // Save search state before closing
+    saveSearchState();
+    
+    // Clean up resources
+    _debounceTimer?.cancel();
+    searchController.dispose();
+    users.clear();
+    selectedCategory.value = null;
+    super.onClose();
+  }
+
+  void saveSearchState() {
+    final box = GetStorage();
+    box.write('searchText', searchController.text);
+    box.write('selectedCategory', selectedCategory.value);
+  }
+
+  void restoreSearchState() {
+    final box = GetStorage();
+    String? savedSearchText = box.read('searchText');
+    String? savedCategory = box.read('selectedCategory');
+
+    if (savedSearchText != null) {
+      searchController.text = savedSearchText;
+    }
+    if (savedCategory != null) {
+      selectedCategory.value = savedCategory;
+    }
+
+    // Perform search with restored state
+    if (savedSearchText != null || savedCategory != null) {
+      searchUsers(savedSearchText ?? '');
+    }
   }
 
   Future<void> loadCategories() async {
@@ -27,7 +73,18 @@ class SearchDrController extends GetxController {
     }
   }
 
-  void searchUsers(String query) async {
+  void searchUsers(String query) {
+    // Cancel any existing debounce timer
+    if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
+    
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      _performSearch(query);
+    });
+  }
+
+  void _performSearch(String query) async {
+    query = query.trim();
+
     if (query.isEmpty && selectedCategory.value == null) {
       users.clear();
       return;

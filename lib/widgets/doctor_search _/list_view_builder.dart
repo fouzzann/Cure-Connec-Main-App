@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ListViewBuilder extends StatelessWidget {
-   ListViewBuilder({super.key});
+  final SearchDrController controller = Get.find<SearchDrController>();
 
-  final SearchDrController controller = Get.put(SearchDrController());
+  ListViewBuilder({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),

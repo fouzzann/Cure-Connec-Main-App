@@ -1,3 +1,4 @@
+import 'package:cure_connect_service/controllers/search_controller.dart';
 import 'package:cure_connect_service/firebase_options.dart';
 import 'package:cure_connect_service/model/api/publisheble_key.dart';
 import 'package:cure_connect_service/views/screens/splash_screen.dart';
@@ -11,7 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );
+  ); 
+  Get.put(SearchDrController());
   runApp(MyApp());
 }
 

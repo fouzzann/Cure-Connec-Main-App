@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchDr extends StatelessWidget {
-  final SearchDrController controller = Get.put(SearchDrController());
+  final SearchDrController controller = Get.find<SearchDrController>();
+
+  SearchDr({super.key});
 
   @override
   Widget build(BuildContext context) {
