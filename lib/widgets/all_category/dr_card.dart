@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
@@ -32,17 +33,13 @@ Widget buildDoctorCard(QueryDocumentSnapshot doc) {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    data['image'] ?? '',
+                  child: CachedNetworkImage(
+                    imageUrl: data['image'] ?? '',
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 60,
-                      height: 60,
-                      color: Colors.grey[200],
-                      child: const Icon(Icons.person),
-                    ),
+                    placeholder: (context, url) =>Icon(Icons.person), 
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
                 const SizedBox(width: 12),

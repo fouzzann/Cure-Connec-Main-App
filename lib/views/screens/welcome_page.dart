@@ -56,7 +56,7 @@ class WelcomePage extends StatelessWidget {
             itemBuilder: (context, index) {
               return buildPage(welcomeContent[index]);
             },
-          ),
+          ),  
           SkipButton(),
           Positioned(
             bottom: 0,

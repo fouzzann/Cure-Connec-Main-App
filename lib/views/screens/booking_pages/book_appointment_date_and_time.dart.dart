@@ -1,23 +1,37 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'disease_form.dart';
+import 'package:cure_connect_service/controllers/appointment_controller.dart';
 
 class AppointmentBookingDateAndTime extends StatefulWidget {
-  const AppointmentBookingDateAndTime(
-      {Key? key, required this.drEmail, required this.fee})
-      : super(key: key);
+  const AppointmentBookingDateAndTime({
+    Key? key, 
+    required this.drEmail, 
+    required this.fee
+  }) : super(key: key);
+  
   final String drEmail;
   final String fee;
+  
   @override
-  State<AppointmentBookingDateAndTime> createState() =>
-      _AppointmentBookingDateAndTimeState();
+  State<AppointmentBookingDateAndTime> createState() => _AppointmentBookingDateAndTimeState();
 }
 
-class _AppointmentBookingDateAndTimeState
-    extends State<AppointmentBookingDateAndTime> {
-  DateTime selectedDate = DateTime.now();
-  final DateTime today = DateTime.now();
+class _AppointmentBookingDateAndTimeState extends State<AppointmentBookingDateAndTime> {
+  DateTime selectedDate = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+  
+  final DateTime today = DateTime(
+    DateTime.now().year,
+    DateTime.now().month,
+    DateTime.now().day,
+  );
+
   String? selectedTime;
   final List<String> timeSlots = [
     '9:00 AM',
@@ -36,6 +50,8 @@ class _AppointmentBookingDateAndTimeState
     '3:30 PM',
     '4:00 PM'
   ];
+  
+  final AppointmentController appointmentController = Get.put(AppointmentController());
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +68,7 @@ class _AppointmentBookingDateAndTimeState
           'Select Date and Time',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
       ),
@@ -90,7 +107,7 @@ class _AppointmentBookingDateAndTimeState
   Widget _buildCalendar() {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF4A78FF).withOpacity(0.2),
+        color: const Color(0xFF4A78FF).withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       padding: const EdgeInsets.all(16),
@@ -107,10 +124,9 @@ class _AppointmentBookingDateAndTimeState
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Color(0xFF4A78FF).withOpacity(0.1),
+                  color: const Color(0xFF4A78FF).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -146,23 +162,40 @@ class _AppointmentBookingDateAndTimeState
             ),
             itemCount: 31,
             itemBuilder: (context, index) {
-              final currentDate =
-                  DateTime(selectedDate.year, selectedDate.month, index + 1);
+              final currentDate = DateTime(
+                selectedDate.year,
+                selectedDate.month,
+                index + 1,
+              );
+
               final isToday = currentDate.year == today.year &&
                   currentDate.month == today.month &&
                   currentDate.day == today.day;
+
               final isSelected = currentDate.year == selectedDate.year &&
                   currentDate.month == selectedDate.month &&
                   currentDate.day == selectedDate.day;
 
-              final isPastDate = currentDate.isBefore(today);
+              final isPastDate = DateTime(
+                currentDate.year,
+                currentDate.month,
+                currentDate.day,
+              ).isBefore(DateTime(
+                today.year,
+                today.month,
+                today.day,
+              ));
 
               return InkWell(
                 onTap: isPastDate
                     ? null
                     : () {
                         setState(() {
-                          selectedDate = currentDate;
+                          selectedDate = DateTime(
+                            currentDate.year,
+                            currentDate.month,
+                            currentDate.day,
+                          );
                         });
                       },
                 child: Container(
@@ -171,12 +204,12 @@ class _AppointmentBookingDateAndTimeState
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isSelected
-                        ? Color(0xFF4A78FF)
+                        ? const Color(0xFF4A78FF)
                         : isToday
-                            ? Color(0xFF4A78FF).withOpacity(0.1)
+                            ? const Color(0xFF4A78FF).withOpacity(0.1)
                             : null,
                     border: isToday && !isSelected
-                        ? Border.all(color: Color(0xFF4A78FF), width: 1)
+                        ? Border.all(color: const Color(0xFF4A78FF), width: 1)
                         : null,
                   ),
                   child: Text(
@@ -185,8 +218,10 @@ class _AppointmentBookingDateAndTimeState
                       color: isSelected
                           ? Colors.white
                           : isToday
-                              ? Colors.blue
-                              : Colors.black,
+                              ? const Color(0xFF4A78FF)
+                              : isPastDate
+                                  ? Colors.grey
+                                  : Colors.black,
                       fontWeight: isSelected || isToday
                           ? FontWeight.bold
                           : FontWeight.w500,
@@ -224,15 +259,15 @@ class _AppointmentBookingDateAndTimeState
           },
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Color(0xFF4A78FF)),
+              border: Border.all(color: const Color(0xFF4A78FF)),
               borderRadius: BorderRadius.circular(25),
-              color: isSelected ? Color(0xFF4A78FF) : Colors.transparent,
+              color: isSelected ? const Color(0xFF4A78FF) : Colors.transparent,
             ),
             alignment: Alignment.center,
             child: Text(
               timeSlot,
               style: TextStyle(
-                color: isSelected ? Colors.white : Color(0xFF4A78FF),
+                color: isSelected ? Colors.white : const Color(0xFF4A78FF),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -247,28 +282,61 @@ class _AppointmentBookingDateAndTimeState
       width: double.infinity,
       child: ElevatedButton(
         onPressed: selectedTime != null
-            ? () {
-                Get.to(
-                    () => DiseaseForm(
-                          selectedDate: selectedDate,
-                          selectedTime: selectedTime!,
-                          drEmail: widget.drEmail,
-                          fee: widget.fee,
-                        ),
-                    transition: Transition.rightToLeftWithFade);
+            ? () async {
+                final bool isBooked =
+                    await appointmentController.checkAlreadyBooked(
+                        widget.drEmail, selectedTime.toString(), selectedDate);
+                log(isBooked.toString());
+                if (!isBooked) {
+                  log('not booked');
+                  Get.to(
+                      () => DiseaseForm(
+                            selectedDate: selectedDate,
+                            selectedTime: selectedTime!,
+                            drEmail: widget.drEmail,
+                            fee: widget.fee,
+                          ),
+                      transition: Transition.rightToLeftWithFade);
+                } else {
+                  GetSnackBar(
+                    title: 'Time Slot Is Already Choosen', 
+                    message:
+                        'The selected time slot is no longer available. Please choose a different time.',
+                    backgroundColor: Colors.blueGrey.shade800,
+                    duration: const Duration(seconds: 3),
+                    snackPosition: SnackPosition.TOP,
+                    borderRadius: 12,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 16),
+                    
+                    
+                    icon: const Icon(  
+                      Icons.error,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    dismissDirection: DismissDirection.horizontal,
+                    isDismissible: true,
+                  ).show();
+                }
               }
             : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF4A78FF),
+          backgroundColor: const Color(0xFF4A78FF),
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
-          ),
+          ), 
         ),
         child: const Text(
           'Next',
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 Widget buildDoctorImage(String imageUrl) {
@@ -6,21 +7,17 @@ Widget buildDoctorImage(String imageUrl) {
   return Container(
     width: _kImageSize,
     height: _kImageSize,
-    decoration: BoxDecoration(
+    decoration: BoxDecoration( 
       color: Colors.grey[200],
       borderRadius: BorderRadius.circular(_kPadding),
     ),
     child: ClipRRect(
       borderRadius: BorderRadius.circular(_kPadding),
-      child: Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => const Icon(
-          Icons.person,
-          size: 40,
-          color: Colors.grey,
-        ),
-      ),
+      child:CachedNetworkImage(imageUrl: imageUrl,
+      fit: BoxFit.cover,
+       placeholder: (context, url) =>Icon(Icons.person), 
+                    errorWidget: (context, url, error) => Icon(Icons.error),
+      )
     ),
   );
 }
