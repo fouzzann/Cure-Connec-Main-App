@@ -12,8 +12,9 @@ class FavoritePage extends GetView<AddedFavoriteController> {
   Widget build(BuildContext context) {
     Get.put(AddedFavoriteController());
 
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text(
           'Favorite Doctors',
           style: TextStyle(
@@ -31,7 +32,7 @@ class FavoritePage extends GetView<AddedFavoriteController> {
             child: CircularProgressIndicator(
               color: Color(0xFF4A78FF),
             ),
-          );
+          ); 
         }
   
         if (controller.favoriteDoctors.isEmpty) {

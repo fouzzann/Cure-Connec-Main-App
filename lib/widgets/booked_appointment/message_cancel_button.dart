@@ -1,4 +1,6 @@
+import 'package:cure_connect_service/views/screens/message%20pages/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget buildCancelButton() {
   return TextButton(
@@ -20,9 +22,11 @@ Widget buildCancelButton() {
   );
 }
 
-Widget buildMessageButton() {
+Widget buildMessageButton(String uid) {
   return ElevatedButton(
-    onPressed: () {},
+    onPressed: () {
+     Get.to(()=> ChatScreen(druid: uid,));
+    },
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.blue,
       padding: const EdgeInsets.symmetric(vertical: 16),

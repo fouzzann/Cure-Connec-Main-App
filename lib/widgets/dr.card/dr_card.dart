@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class DoctorCard extends StatelessWidget{
+class DoctorCard extends StatelessWidget {
   final String name;
   final String specialty;
   final String imageUrl;
@@ -18,21 +18,34 @@ class DoctorCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Define responsive values based on screen width
+    final double containerMargin = screenWidth < 600 ? 5.0 : 10.0;
+    final double containerPadding = screenWidth < 600 ? 15.0 : 20.0;
+    final double nameSize = screenWidth < 600 ? 20.0 : 24.0;
+    final double specialtySize = screenWidth < 600 ? 14.0 : 16.0;
+    final double starSize = screenWidth < 60 ? 16.0 : 20.0;
+    final double avatarRadius = screenWidth < 600 ? 20.0 : 25.0;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5.0),
+      margin: EdgeInsets.symmetric(horizontal: containerMargin),
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          image: DecorationImage(
-              image: NetworkImage(
-                  'https://media.istockphoto.com/id/1387688781/vector/modern-layer-blue-colorful-abstract-design-background.jpg?s=612x612&w=0&k=20&c=wAKGTuxGlV3ZUAMVKXUpA_Lai89TZkYa059ubw5s-8U='))),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        image: DecorationImage(
+          image: NetworkImage('https://media.istockphoto.com/id/1387688781/vector/modern-layer-blue-colorful-abstract-design-background.jpg?s=612x612&w=0&k=20&c=wAKGTuxGlV3ZUAMVKXUpA_Lai89TZkYa059ubw5s-8U='),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Stack(
         children: [
           Container(
@@ -49,7 +62,7 @@ class DoctorCard extends StatelessWidget{
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(15.0),
+            padding: EdgeInsets.all(containerPadding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -59,17 +72,17 @@ class DoctorCard extends StatelessWidget{
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(
-                        fontSize: 24,
+                      style: TextStyle(
+                        fontSize: nameSize,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     Text(
                       specialty,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 223, 223, 223),
+                      style: TextStyle(
+                        fontSize: specialtySize,
+                        color: const Color.fromARGB(255, 223, 223, 223),
                       ),
                     ),
                   ],
@@ -82,7 +95,7 @@ class DoctorCard extends StatelessWidget{
                         return Icon(
                           index < rating ? Icons.star : Icons.star_border,
                           color: Colors.amber,
-                          size: 20,
+                          size: starSize,
                         );
                       }),
                     ),
@@ -93,10 +106,17 @@ class DoctorCard extends StatelessWidget{
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth < 600 ? 12.0 : 16.0,
+                          vertical: screenWidth < 600 ? 8.0 : 10.0,
+                        ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Book Now',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth < 600 ? 12.0 : 14.0,
+                        ),
                       ),
                     ),
                   ],
@@ -105,10 +125,10 @@ class DoctorCard extends StatelessWidget{
             ),
           ),
           Positioned(
-            right: 15,
-            top: 15,
+            right: containerPadding,
+            top: containerPadding,
             child: CircleAvatar(
-              radius: 25,
+              radius: avatarRadius,
               backgroundImage: NetworkImage(imageUrl),
             ),
           ),
@@ -117,4 +137,3 @@ class DoctorCard extends StatelessWidget{
     );
   }
 }
-

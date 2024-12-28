@@ -35,14 +35,14 @@ Widget buildAppointmentCard(UserAppointmentHistoryModel doctor) {
           const SizedBox(height: _kPadding),
           buildAppointmentInfo(doctor),
           const SizedBox(height: _kPadding),
-          buildActionButtons(),
+          buildActionButtons(doctor.doctorModel.uid),
         ],
       ),
     ),
   );
 }
 
-Widget buildActionButtons() {
+Widget buildActionButtons(uid) {
   return Row(
     children: [
       Expanded(
@@ -50,7 +50,7 @@ Widget buildActionButtons() {
       ),
       const SizedBox(width: 16),
       Expanded(
-        child: buildMessageButton(),
+        child: buildMessageButton(uid),
       ),
     ],
   );
