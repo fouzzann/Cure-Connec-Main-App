@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppBarSearchBar extends StatelessWidget {
-  const AppBarSearchBar({super.key});  
+  const AppBarSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    
     return GestureDetector(
       onTap: () {
         Get.to(() => SearchDr(), transition: Transition.downToUp);
       },
       child: Container(
-        height: 45,
+        height: size.height * 0.055, // Responsive height
+        width: size.width * 0.9, // Responsive width
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(size.width * 0.08),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -30,14 +33,20 @@ class AppBarSearchBar extends StatelessWidget {
             textAlignVertical: TextAlignVertical.center,
             decoration: InputDecoration(
               hintText: 'Search....',
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 color: Colors.grey,
-                fontSize: 16,
+                fontSize: size.width * 0.04, // Responsive font size
               ),
               prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 8),
-                child: Icon(Icons.search,
-                    color: Colors.grey.withOpacity(0.7), size: 22),
+                padding: EdgeInsets.only(
+                  left: size.width * 0.04,
+                  right: size.width * 0.02,
+                ),
+                child: Icon(
+                  Icons.search,
+                  color: Colors.grey.withOpacity(0.7),
+                  size: size.width * 0.055,
+                ),
               ),
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,

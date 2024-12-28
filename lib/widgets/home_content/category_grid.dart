@@ -14,6 +14,10 @@ class CategoryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.width < 360;
+
     final List<Widget> categoryPages = [
       Physiotherapist(),
       Dentist(),
@@ -23,31 +27,43 @@ class CategoryGrid extends StatelessWidget {
       Nephrologist()
     ];
 
+    // Calculate responsive dimensions
+    final double gridPadding = size.width * 0.02;
+    final double iconSize = size.width * 0.1;  // 10% of screen width
+    final double fontSize = size.width * 0.028; // 2.8% of screen width
+    final double containerPadding = size.width * 0.02;
+    final double spacing = size.width * 0.04; // 4% of screen width
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(gridPadding),
       itemCount: categoryTitles.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        crossAxisSpacing: 15,
-        mainAxisSpacing: 15,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+        // Maintain aspect ratio based on screen size
+        childAspectRatio: isSmallScreen ? 0.9 : 1.0,
       ),
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            Get.to(() => categoryPages[index % categoryPages.length],
-                transition: Transition.size);
+            Get.to(
+              () => categoryPages[index % categoryPages.length],
+              transition: Transition.size,
+            );
           },
           child: Container(
-            padding: const EdgeInsets.all(8),
+            padding: EdgeInsets.all(containerPadding),
             decoration: BoxDecoration(
               color: categoryColors[index % categoryColors.length],
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(size.width * 0.03), // Responsive border radius
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
+                  blurRadius: size.width * 0.015, // Responsive blur
+                  offset: Offset(0, size.width * 0.005), // Responsive offset
                 ),
               ],
             ),
@@ -56,18 +72,21 @@ class CategoryGrid extends StatelessWidget {
               children: [
                 Image.asset(
                   categorysImages[index],
-                  height: 40,
-                  width: 40,
+                  height: iconSize,
+                  width: iconSize,
+                  fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  categoryTitles[index],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                    color:
-                        categoryTextColors[index % categoryTextColors.length],
+                SizedBox(height: size.height * 0.01), // Responsive spacing
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    categoryTitles[index],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: fontSize,
+                      color: categoryTextColors[index % categoryTextColors.length],
+                    ),
                   ),
                 ),
               ],

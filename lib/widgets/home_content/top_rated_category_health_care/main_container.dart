@@ -60,6 +60,7 @@ class MainContainer extends StatelessWidget {
                   CategoryGrid(),
                   SizedBox(height: 30),
                   HealthCareArticles(),
+                  SizedBox(height: 20,)
                 ],
               ),
             ),
