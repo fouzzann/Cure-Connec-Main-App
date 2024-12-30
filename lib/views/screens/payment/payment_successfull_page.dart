@@ -210,7 +210,7 @@ class _PaymentSuccessPageState extends State<PaymentSuccessPage>
                   ),
                   const SizedBox(height: 16),
                   OutlinedButton(
-                    onPressed: () => Get.to(()=>HomePage()),      
+                    onPressed: () => Get.offAll(()=>HomePage()),      
                     style: OutlinedButton.styleFrom(
                       foregroundColor: primaryColor,
                       minimumSize: const Size(double.infinity, 56),

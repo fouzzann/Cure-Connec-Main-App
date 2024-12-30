@@ -6,9 +6,9 @@ class HealthyEatingHabits extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor:Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: Text( 
           '10 Healthy Eating Habits', 
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
@@ -176,7 +176,7 @@ class _HealthHabitItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Card(
+      child: Card(color: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),

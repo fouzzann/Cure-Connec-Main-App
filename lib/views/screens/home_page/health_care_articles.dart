@@ -148,7 +148,7 @@ class HealthCareArticles extends StatelessWidget {
                         fontSize: 12,
                         color: Colors.grey,
                       ),
-                    ),
+                    ), 
                     TextButton(
                       onPressed: () => _navigateToArticle(index),
                       child: Text(

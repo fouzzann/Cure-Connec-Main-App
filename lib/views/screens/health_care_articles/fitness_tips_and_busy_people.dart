@@ -8,10 +8,10 @@ class FitnessTipsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final primaryColor = const Color(0xFF4A78FF);
 
-    return Scaffold(
+    return Scaffold(backgroundColor:Colors.white,
       appBar: AppBar(
         title: Text(
-          'Fitness Tips for Busy People', 
+          'Fitness Tips for Busy People',  
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: Colors.black,
@@ -160,9 +160,9 @@ class _FitnessTipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Card(
+      child: Card(color: Colors.white,
         elevation: 4,
-        shape: RoundedRectangleBorder(
+        shape: RoundedRectangleBorder( 
           borderRadius: BorderRadius.circular(12),
         ),
         child: Padding(

@@ -18,11 +18,11 @@ class ListViewBuilder extends StatelessWidget {
         final user =
             controller.users[index].data() as Map<String, dynamic>;
 
-        return Card(
+        return Card(color: Colors.white,
           elevation: 4,
           margin: const EdgeInsets.symmetric(vertical: 8),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12), 
           ),
           child: ListTile(
             leading: CircleAvatar(

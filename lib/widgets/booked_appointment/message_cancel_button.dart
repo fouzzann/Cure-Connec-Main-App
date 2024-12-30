@@ -1,10 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cure_connect_service/controllers/appointment_controller.dart';
 import 'package:cure_connect_service/views/screens/message%20pages/chat_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Widget buildCancelButton() {
+Widget buildCancelButton(
+  String docId,
+  AppointmentController appointmentController,
+) {
   return TextButton(
-    onPressed: () {},
+    onPressed: () async {
+      await FirebaseFirestore.instance
+          .collection('appointment')
+          .doc(docId)
+          .delete();
+      await appointmentController
+          .getUserAppointmentHistory(FirebaseAuth.instance.currentUser!.email!);
+    },
     style: TextButton.styleFrom(
       padding: const EdgeInsets.symmetric(vertical: 16),
       shape: RoundedRectangleBorder(
@@ -25,8 +38,11 @@ Widget buildCancelButton() {
 Widget buildMessageButton(String uid) {
   return ElevatedButton(
     onPressed: () {
-     Get.to(()=> ChatScreen(druid: uid,), 
-     transition: Transition.rightToLeftWithFade);
+      Get.to(
+          () => ChatScreen(
+                druid: uid,
+              ),
+          transition: Transition.rightToLeftWithFade);
     },
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.blue,
@@ -43,5 +59,5 @@ Widget buildMessageButton(String uid) {
         fontWeight: FontWeight.w600,
       ),
     ),
-  );   
+  );
 }

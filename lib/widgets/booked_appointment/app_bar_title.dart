@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 PreferredSizeWidget buildAppBar() {
   return AppBar(
+    automaticallyImplyLeading: false,
     elevation: 0,
     scrolledUnderElevation: 0,
     backgroundColor: Colors.transparent,
@@ -13,5 +14,5 @@ PreferredSizeWidget buildAppBar() {
       ),
     ),
     centerTitle: true,
-  );
+  ); 
 }

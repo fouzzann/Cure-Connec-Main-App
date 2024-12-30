@@ -21,7 +21,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   void initState() {
     super.initState();
-    fetchAppointments();
+    fetchAppointments(_appointmentController);
   }
 
   @override
@@ -44,7 +44,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
           padding: const EdgeInsets.all(_kPadding),
           itemCount: _appointmentController.history.length,
           itemBuilder: (context, index) {
-            return buildAppointmentCard(_appointmentController.history[index]);
+            return buildAppointmentCard(
+                _appointmentController.history[index], _appointmentController);
           },
         );
       }),

@@ -12,13 +12,13 @@ class SearchDr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
+    return Scaffold(backgroundColor: Colors.white,
+      appBar: AppBar(backgroundColor: Colors.white,
         leading: IconButton(
           onPressed: () => Get.back(),
           icon: const Icon(Icons.keyboard_arrow_down_outlined, size: 40),
         ),
-        title: const Text(
+        title: const Text( 
           'Search Doctors',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),

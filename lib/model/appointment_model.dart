@@ -12,6 +12,7 @@ class AppointmentModel {
   String drEmail;
   String userEmail;
   String status;
+  String? docId;
   AppointmentModel({
     this.id,
     required this.name,
@@ -24,6 +25,7 @@ class AppointmentModel {
     required this.userEmail,
     required this.status,
     DateTime? createdAt,
+    
   }) : createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
