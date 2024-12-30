@@ -24,7 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -81,13 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
           },
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage('assets/chat_bakground.jpg'),
-              fit: BoxFit.cover),
-        ),
-        child: Column(
+      body: Column(
           children: [
             Expanded(
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -248,7 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
-      ),
+      
     );
   }
 }

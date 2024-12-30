@@ -12,14 +12,14 @@ class HealthyEatingHabits extends StatelessWidget {
           '10 Healthy Eating Habits', 
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,),
+        leading: IconButton( 
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,color: Colors.black,),
           onPressed: () => Get.back(),
         ),
-        backgroundColor: const Color(0xFF4A78FF), // Updated color
+        backgroundColor:Colors.white,
         elevation: 0,
       ),
       body: const SafeArea(

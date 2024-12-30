@@ -14,7 +14,6 @@ class CategoryGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size
     final size = MediaQuery.of(context).size;
     final isSmallScreen = size.width < 360;
 
@@ -27,12 +26,11 @@ class CategoryGrid extends StatelessWidget {
       Nephrologist()
     ];
 
-    // Calculate responsive dimensions
     final double gridPadding = size.width * 0.02;
-    final double iconSize = size.width * 0.1;  // 10% of screen width
-    final double fontSize = size.width * 0.028; // 2.8% of screen width
+    final double iconSize = size.width * 0.1;
+    final double fontSize = size.width * 0.028;
     final double containerPadding = size.width * 0.02;
-    final double spacing = size.width * 0.04; // 4% of screen width
+    final double spacing = size.width * 0.04;
 
     return GridView.builder(
       shrinkWrap: true,
@@ -43,7 +41,6 @@ class CategoryGrid extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: spacing,
         mainAxisSpacing: spacing,
-        // Maintain aspect ratio based on screen size
         childAspectRatio: isSmallScreen ? 0.9 : 1.0,
       ),
       itemBuilder: (context, index) {
@@ -58,12 +55,12 @@ class CategoryGrid extends StatelessWidget {
             padding: EdgeInsets.all(containerPadding),
             decoration: BoxDecoration(
               color: categoryColors[index % categoryColors.length],
-              borderRadius: BorderRadius.circular(size.width * 0.03), // Responsive border radius
+              borderRadius: BorderRadius.circular(size.width * 0.03),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.2),
-                  blurRadius: size.width * 0.015, // Responsive blur
-                  offset: Offset(0, size.width * 0.005), // Responsive offset
+                  blurRadius: size.width * 0.015,
+                  offset: Offset(0, size.width * 0.005),
                 ),
               ],
             ),
@@ -76,7 +73,7 @@ class CategoryGrid extends StatelessWidget {
                   width: iconSize,
                   fit: BoxFit.contain,
                 ),
-                SizedBox(height: size.height * 0.01), // Responsive spacing
+                SizedBox(height: size.height * 0.01),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
@@ -85,7 +82,8 @@ class CategoryGrid extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: fontSize,
-                      color: categoryTextColors[index % categoryTextColors.length],
+                      color:
+                          categoryTextColors[index % categoryTextColors.length],
                     ),
                   ),
                 ),

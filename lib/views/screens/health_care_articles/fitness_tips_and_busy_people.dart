@@ -14,14 +14,14 @@ class FitnessTipsPage extends StatelessWidget {
           'Fitness Tips for Busy People', 
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded,color: Colors.white,),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded,color: Colors.black,),
           onPressed: () => Get.back(),
         ),
-        backgroundColor: primaryColor,
+        backgroundColor:Colors.white,
         elevation: 0,
       ),
       body: SafeArea(

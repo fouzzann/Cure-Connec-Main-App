@@ -25,7 +25,8 @@ Widget buildCancelButton() {
 Widget buildMessageButton(String uid) {
   return ElevatedButton(
     onPressed: () {
-     Get.to(()=> ChatScreen(druid: uid,));
+     Get.to(()=> ChatScreen(druid: uid,), 
+     transition: Transition.rightToLeftWithFade);
     },
     style: ElevatedButton.styleFrom(
       backgroundColor: Colors.blue,
@@ -42,5 +43,5 @@ Widget buildMessageButton(String uid) {
         fontWeight: FontWeight.w600,
       ),
     ),
-  );
+  );   
 }
