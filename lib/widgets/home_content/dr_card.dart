@@ -18,10 +18,8 @@ class DoctorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen size
     final screenWidth = MediaQuery.of(context).size.width;
-    
-    // Define responsive values based on screen width
+
     final double containerMargin = screenWidth < 600 ? 5.0 : 10.0;
     final double containerPadding = screenWidth < 600 ? 15.0 : 20.0;
     final double nameSize = screenWidth < 600 ? 20.0 : 24.0;
@@ -42,7 +40,7 @@ class DoctorCard extends StatelessWidget {
           ),
         ],
         image: DecorationImage(
-          image: NetworkImage('https://media.istockphoto.com/id/1387688781/vector/modern-layer-blue-colorful-abstract-design-background.jpg?s=612x612&w=0&k=20&c=wAKGTuxGlV3ZUAMVKXUpA_Lai89TZkYa059ubw5s-8U='),
+          image: AssetImage('assets/Doctor Card Backgorund.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -91,13 +89,7 @@ class DoctorCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          index < rating ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
-                          size: starSize,
-                        );
-                      }),
+                      children: _buildRatingStars(rating, starSize),
                     ),
                     ElevatedButton(
                       onPressed: () {},
@@ -135,5 +127,22 @@ class DoctorCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildRatingStars(double rating, double starSize) {
+    List<Widget> stars = [];
+    int fullStars = rating.floor();
+    bool hasHalfStar = (rating - fullStars) >= 0.5;
+
+    for (int i = 0; i < 5; i++) {
+      if (i < fullStars) {
+        stars.add(Icon(Icons.star, color: Colors.amber, size: starSize));
+      } else if (i == fullStars && hasHalfStar) {
+        stars.add(Icon(Icons.star_half, color: Colors.amber, size: starSize));
+      } else {
+        stars.add(Icon(Icons.star_border, color: Colors.amber, size: starSize));
+      }
+    }
+    return stars;
   }
 }

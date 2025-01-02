@@ -9,7 +9,8 @@ class TopRatedDrSeeallOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        Get.to(() => TopRatedDoctors());
+        Get.to(() => TopRatedDoctors(),  
+        transition: Transition.rightToLeftWithFade);
       },
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),

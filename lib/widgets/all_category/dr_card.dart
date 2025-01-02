@@ -104,8 +104,8 @@ Widget buildDoctorCard(QueryDocumentSnapshot doc) {
                       Row(
                         children: [
                           const Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4), 
-                          Text( 
+                          const SizedBox(width: 4),
+                          Text(
                             data['rating'] ?? '0.0',
                             style: TextStyle(
                               color: Colors.grey[700],
@@ -113,13 +113,6 @@ Widget buildDoctorCard(QueryDocumentSnapshot doc) {
                             ),
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            '(3,837 reviews)',
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 13,
-                            ),
-                          ),
                         ],
                       ),
                     ],

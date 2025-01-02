@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/controllers/dr_carousel.dart';
+import 'package:cure_connect_service/views/screens/dr_carousel.dart';
 import 'package:cure_connect_service/views/screens/home_page/health_care_articles.dart';
 import 'package:cure_connect_service/widgets/home_content/category_grid.dart';
 import 'package:cure_connect_service/widgets/home_content/category_see_all_option.dart';
@@ -53,7 +53,7 @@ class MainContainer extends StatelessWidget {
                           fontSize: 15,
                         ),
                       ),
-                      CategorySeeAllOption()
+                      CategorySeeAllOption() 
                     ],
                   ),
                   SizedBox(height: 30),

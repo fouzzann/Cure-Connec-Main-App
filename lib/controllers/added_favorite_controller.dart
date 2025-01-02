@@ -18,6 +18,7 @@ class AddedFavoriteController extends GetxController {
       isLoading.value = true;
       final prefs = await SharedPreferences.getInstance();
       final storedFavorites = prefs.getStringList('favorites') ?? [];
+      // ignore: invalid_use_of_protected_member
       favoriteDoctors.value = storedFavorites.toSet();
       isLoading.value = false;
     } catch (e) {

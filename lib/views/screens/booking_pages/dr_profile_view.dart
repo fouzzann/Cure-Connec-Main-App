@@ -104,17 +104,16 @@ class DoctorProfileView extends StatelessWidget {
                 ],
               ),
             ),
-            // Stats Row
             Container(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   _buildStat(
-                    icon: Icons.groups_outlined,
-                    value: '5,000+',
-                    label: 'Patients',
-                    iconColor: Color(0xFF4A78FF),
+                    icon: Icons.local_hospital,
+                    value: 'Hospital',   
+                    label: 'Work',
+                    iconColor: Color(0xFF4A78FF), 
                   ),
                   _buildStat(
                     icon: Icons.workspace_premium_outlined,
@@ -138,11 +137,11 @@ class DoctorProfileView extends StatelessWidget {
               ),
             ),
             _buildSection(
-              title: 'Working Time',
+              title: "Working Day's",
               content: '${data['availableDays']}',
             ),
             _buildSection(
-              title: 'Consultation Fee',
+              title: 'Consultation Fee', 
               content: 'Rs:${data['consultationFee']}',
             ),
           ],
@@ -153,24 +152,6 @@ class DoctorProfileView extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[200],
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                  ),
-                  child: const Text(
-                    'Send Message',
-                    style: TextStyle(
-                      color: Color(0xFF4A78FF),
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
