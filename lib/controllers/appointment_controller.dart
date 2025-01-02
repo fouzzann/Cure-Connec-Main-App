@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:cure_connect_service/model/doctor_model.dart';
 import 'package:cure_connect_service/model/user_appointment_history_model.dart';
+import 'package:cure_connect_service/services/calculate_avg_rating.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,8 @@ class AppointmentController extends GetxController {
   var errorMessage = ''.obs;
   RxBool isBooked = false.obs;
   final FirebaseFirestore db = FirebaseFirestore.instance;
-  RxList<UserAppointmentHistoryModel> history = <UserAppointmentHistoryModel>[].obs;
+  RxList<UserAppointmentHistoryModel> history =
+      <UserAppointmentHistoryModel>[].obs;
   RxList<Doctor> availableDoctors = <Doctor>[].obs;
 
   Future<void> addAppointment(AppointmentModel appointment) async {
@@ -88,25 +90,24 @@ class AppointmentController extends GetxController {
     }
   }
 
-  Future<List<Doctor>> getAvailableDoctors(DateTime selectedDate, String selectedTime) async {
+  Future<List<Doctor>> getAvailableDoctors(
+      DateTime selectedDate, String selectedTime) async {
     try {
       isLoading.value = true;
       availableDoctors.clear();
 
       // Get all doctors first
-      final QuerySnapshot doctorsSnapshot = await db.collection('doctors').get();
+      final QuerySnapshot doctorsSnapshot =
+          await db.collection('doctors').get();
       final List<Doctor> allDoctors = doctorsSnapshot.docs
           .map((doc) => Doctor.fromMap(doc.data() as Map<String, dynamic>))
           .toList();
 
       // Check availability for each doctor
       for (Doctor doctor in allDoctors) {
-        bool isBooked = await checkAlreadyBooked(
-          doctor.email, 
-          selectedTime, 
-          selectedDate
-        );
-        
+        bool isBooked =
+            await checkAlreadyBooked(doctor.email, selectedTime, selectedDate);
+
         if (!isBooked) {
           availableDoctors.add(doctor);
         }
@@ -121,11 +122,8 @@ class AppointmentController extends GetxController {
     }
   }
 
-  Future<bool> checkAlreadyBooked(
-    String drEmail, 
-    String currentSelectedTime,
-    DateTime currentSelectedDate
-  ) async {
+  Future<bool> checkAlreadyBooked(String drEmail, String currentSelectedTime,
+      DateTime currentSelectedDate) async {
     try {
       final QuerySnapshot querySnapshot = await db
           .collection('appointment')
@@ -136,7 +134,7 @@ class AppointmentController extends GetxController {
         final data = element.data() as Map<String, dynamic>;
         final time = data['appointmentTime'];
         final Timestamp dateStamp = data['appointmentDate'];
- 
+
         final formatedBeforeDate =
             DateFormat("yyyy-MM-dd").format(dateStamp.toDate());
         final formatedCurrentDate =
@@ -153,14 +151,33 @@ class AppointmentController extends GetxController {
       return true;
     }
   }
-  // Future<void> ratingFunction (String doctorEmail,int rating)async{
-  //   try {
-  //  final doctor =  await db.collection('doctors').doc(doctorEmail).get();
-  //  List<int> ratingList = doctor.data()?['ratingList']as List<int>;
-  //  ratingList.add(rating);
-  //  await db.collection('doctors').doc().update({'ratingList':ratingList});
-  //   } catch (e) {
-  //     log(e.toString());
-  //   }
-  // } 
+
+  Future<void> ratingFunction(String doctorEmail, int rating) async {
+    try {
+      if (rating != 0) {
+        log(doctorEmail);
+        final doctor = await db.collection('doctors').doc(doctorEmail).get();
+        log(doctor.exists.toString());
+        List<dynamic> dynamicList =
+            doctor.data()?['ratingList'] as List<dynamic>;
+        List<int> ratingList = dynamicList.map((e) => e as int).toList();
+
+        ratingList.add(rating);
+        await db
+            .collection('doctors')
+            .doc(doctorEmail)
+            .update({'ratingList': ratingList});
+        final avg = await calculateAvgRating(doctorEmail);
+        
+        final avgRating=avg.toStringAsFixed(1);;
+        log(avgRating);
+        await db
+            .collection('doctors')
+            .doc(doctorEmail)
+            .update({'rating': avgRating}); 
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

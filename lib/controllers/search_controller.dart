@@ -17,8 +17,6 @@ class SearchDrController extends GetxController {
     super.onInit();
     loadCategories();
     restoreSearchState();
-
-    // Automatically search when category changes
     ever(selectedCategory, (_) {
       searchUsers(searchController.text);
     });
@@ -26,9 +24,8 @@ class SearchDrController extends GetxController {
 
   @override
   void onClose() {
-    // Save search state before closing
     saveSearchState();
-    
+
     // Clean up resources
     _debounceTimer?.cancel();
     searchController.dispose();
@@ -55,7 +52,6 @@ class SearchDrController extends GetxController {
       selectedCategory.value = savedCategory;
     }
 
-    // Perform search with restored state
     if (savedSearchText != null || savedCategory != null) {
       searchUsers(savedSearchText ?? '');
     }
@@ -74,9 +70,8 @@ class SearchDrController extends GetxController {
   }
 
   void searchUsers(String query) {
-    // Cancel any existing debounce timer
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
-    
+
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       _performSearch(query);
     });

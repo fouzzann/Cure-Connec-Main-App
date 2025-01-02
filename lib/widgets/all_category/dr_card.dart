@@ -38,7 +38,7 @@ Widget buildDoctorCard(QueryDocumentSnapshot doc) {
                     width: 60,
                     height: 60,
                     fit: BoxFit.cover,
-                    placeholder: (context, url) =>Icon(Icons.person), 
+                    placeholder: (context, url) => Icon(Icons.person),
                     errorWidget: (context, url, error) => Icon(Icons.error),
                   ),
                 ),
@@ -104,9 +104,9 @@ Widget buildDoctorCard(QueryDocumentSnapshot doc) {
                       Row(
                         children: [
                           const Icon(Icons.star, color: Colors.amber, size: 16),
-                          const SizedBox(width: 4),
-                          Text(
-                            '4.3',
+                          const SizedBox(width: 4), 
+                          Text( 
+                            data['rating'] ?? '0.0',
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 13,

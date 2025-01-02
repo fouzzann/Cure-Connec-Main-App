@@ -4,10 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddedFavoriteController extends GetxController {
-  // Reactive set of favorite doctor IDs
   final RxSet<String> favoriteDoctors = <String>{}.obs;
-  
-  // Loading state
   final RxBool isLoading = true.obs;
 
   @override
@@ -21,16 +18,14 @@ class AddedFavoriteController extends GetxController {
       isLoading.value = true;
       final prefs = await SharedPreferences.getInstance();
       final storedFavorites = prefs.getStringList('favorites') ?? [];
-
-      // ignore: invalid_use_of_protected_member
       favoriteDoctors.value = storedFavorites.toSet();
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
       Get.snackbar(
-        'Error', 
+        'Error',
         'Failed to load favorites',
-        backgroundColor:  Color(0xFFFF0000),
+        backgroundColor: Color(0xFFFF0000),
         colorText: const Color(0xFFFFFFFF),
       );
     }
@@ -39,7 +34,7 @@ class AddedFavoriteController extends GetxController {
   Future<void> toggleFavorite(String doctorId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
+
       if (favoriteDoctors.contains(doctorId)) {
         favoriteDoctors.remove(doctorId);
       } else {
@@ -49,7 +44,7 @@ class AddedFavoriteController extends GetxController {
       await prefs.setStringList('favorites', favoriteDoctors.toList());
     } catch (e) {
       Get.snackbar(
-        'Error', 
+        'Error',
         'Failed to update favorites',
         backgroundColor: const Color(0xFFFF0000),
         colorText: const Color(0xFFFFFFFF),
@@ -59,7 +54,10 @@ class AddedFavoriteController extends GetxController {
 
   Future<DocumentSnapshot?> getDoctorDetails(String doctorId) async {
     try {
-      return await FirebaseFirestore.instance.collection('doctors').doc(doctorId).get();
+      return await FirebaseFirestore.instance
+          .collection('doctors')
+          .doc(doctorId)
+          .get();
     } catch (e) {
       return null;
     }

@@ -19,7 +19,7 @@ Widget buildAppointmentInfo(UserAppointmentHistoryModel doctor) {
 
   String getFormattedTime() {
     try {
-      if (doctor.appointmentModel.appointmentTime == doctor) { 
+      if (doctor.appointmentModel.appointmentTime == doctor) {
         return 'Not set';
       }
       return doctor.appointmentModel.appointmentTime;
@@ -51,7 +51,7 @@ Widget buildAppointmentInfo(UserAppointmentHistoryModel doctor) {
         buildInfoColumn(
           Icons.star_rounded,
           'Rating',
-          '3.3',
+          doctor.doctorModel.rating.toString(),
         ),
       ],
     ),

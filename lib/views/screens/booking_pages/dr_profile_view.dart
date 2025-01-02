@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DoctorProfileView extends StatelessWidget {
-  final  data;
+  final data;
 
   const DoctorProfileView({Key? key, required this.data}) : super(key: key);
 
-  @override   
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -15,11 +15,10 @@ class DoctorProfileView extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-          onPressed: () => Get.back() 
-        ),
-        title: Text( 
-          'Dr. ${data['fullName'] ?? 'Unknown Doctor'}', 
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () => Get.back()),
+        title: Text(
+          'Dr. ${data['fullName'] ?? 'Unknown Doctor'}',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -91,7 +90,7 @@ class DoctorProfileView extends StatelessWidget {
                                   TextSpan(
                                     text: '${data['location']}',
                                     style: const TextStyle(
-                                      color: Color(0xFF4A78FF),  
+                                      color: Color(0xFF4A78FF),
                                     ),
                                   ),
                                 ],
@@ -115,26 +114,26 @@ class DoctorProfileView extends StatelessWidget {
                     icon: Icons.groups_outlined,
                     value: '5,000+',
                     label: 'Patients',
-                    iconColor: Color(0xFF4A78FF), 
+                    iconColor: Color(0xFF4A78FF),
                   ),
                   _buildStat(
                     icon: Icons.workspace_premium_outlined,
                     value: "${data['yearsOfExperience']} Years",
                     label: 'Experience',
-                    iconColor: Color(0xFF4A78FF), 
+                    iconColor: Color(0xFF4A78FF),
                   ),
                   _buildStat(
                     icon: Icons.star_outlined,
-                    value: '4.8',
+                    value: data['rating'] ?? '0.0',
                     label: 'Rating',
-                      iconColor: Color(0xFF4A78FF), 
+                    iconColor: Color(0xFF4A78FF),
                   ),
                   _buildStat(
                     icon: Icons.security_update_good,
                     value: 'Verified',
                     label: 'Profile',
-                    iconColor: Color(0xFF4A78FF), 
-                  ), 
+                    iconColor: Color(0xFF4A78FF),
+                  ),
                 ],
               ),
             ),
@@ -148,7 +147,7 @@ class DoctorProfileView extends StatelessWidget {
             ),
           ],
         ),
-      ), 
+      ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -157,40 +156,48 @@ class DoctorProfileView extends StatelessWidget {
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {},
-                  style: ElevatedButton.styleFrom( 
+                  style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[200],
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), 
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: const Text('Send Message', 
-                  style: TextStyle(color:Color(0xFF4A78FF),),), 
+                  child: const Text(
+                    'Send Message',
+                    style: TextStyle(
+                      color: Color(0xFF4A78FF),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(()=>AppointmentBookingDateAndTime(drEmail:data['email'],
-                    fee: data['consultationFee'],
-                    ), 
-                    transition: Transition.rightToLeftWithFade); 
+                    Get.to(
+                        () => AppointmentBookingDateAndTime(
+                              drEmail: data['email'],
+                              fee: data['consultationFee'],
+                            ),
+                        transition: Transition.rightToLeftWithFade);
                   },
-                  style: ElevatedButton.styleFrom( 
-                    backgroundColor: const Color(0xFF4A78FF), 
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4A78FF),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),   
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  child: const Text('Book Appointment',
-                  style: TextStyle(color: Colors.white),),  
-                ), 
+                  child: const Text(
+                    'Book Appointment',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               ),
             ],
           ),
-        ), 
+        ),
       ),
     );
   }
@@ -256,5 +263,5 @@ class DoctorProfileView extends StatelessWidget {
         ],
       ),
     );
-  } 
+  }
 }

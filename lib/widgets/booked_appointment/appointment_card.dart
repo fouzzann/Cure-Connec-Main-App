@@ -1,7 +1,7 @@
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/appointment_controller.dart';
 import 'package:cure_connect_service/model/user_appointment_history_model.dart';
+import 'package:cure_connect_service/services/calculate_avg_rating.dart';
 import 'package:cure_connect_service/widgets/booked_appointment/appointment_info.dart';
 import 'package:cure_connect_service/widgets/booked_appointment/doctor_info.dart';
 import 'package:cure_connect_service/widgets/booked_appointment/message_cancel_button.dart';
@@ -11,7 +11,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-
 const double _kPadding = 20.0;
 const double _kBorderRadius = 24.0;
 
@@ -60,14 +59,18 @@ Widget buildAppointmentCard(UserAppointmentHistoryModel doctor,
           top: 8,
           right: 8,
           child: buildRatingButton(
-              doctor.doctorModel.uid, doctor.appointmentModel.id!,doctor.doctorModel.email, appointmentController),
+              doctor.doctorModel.uid,
+              doctor.appointmentModel.id!,
+              doctor.doctorModel.email,
+              appointmentController),
         ),
       ],
     ),
   );
 }
 
-Widget buildRatingButton(String doctorId, String appointmentId,String doctorEmail,AppointmentController appointmentController) {
+Widget buildRatingButton(String doctorId, String appointmentId,
+    String doctorEmail, AppointmentController appointmentController) {
   return ElevatedButton(
     style: ElevatedButton.styleFrom(
       backgroundColor: Color(0xFF4A78FF),
@@ -76,7 +79,8 @@ Widget buildRatingButton(String doctorId, String appointmentId,String doctorEmai
       ),
     ),
     onPressed: () {
-      showRatingDialog(doctorId, appointmentId,doctorEmail,appointmentController);
+      showRatingDialog(
+          doctorId, appointmentId, doctorEmail, appointmentController);
     },
     child: const Text(
       'Rate',
@@ -85,7 +89,8 @@ Widget buildRatingButton(String doctorId, String appointmentId,String doctorEmai
   );
 }
 
-void showRatingDialog(String doctorId, String appointmentId,String doctorEmail,AppointmentController appointmentController) {
+void showRatingDialog(String doctorId, String appointmentId, String doctorEmail,
+    AppointmentController appointmentController) {
   int _rating = 0;
   showDialog(
     context: Get.context!,
@@ -101,7 +106,7 @@ void showRatingDialog(String doctorId, String appointmentId,String doctorEmail,A
           const Text('How was your experience with the doctor?'),
           const SizedBox(height: 16),
           RatingBar.builder(
-            initialRating: 3,
+            initialRating: 0,
             minRating: 1,
             direction: Axis.horizontal,
             allowHalfRating: false,
@@ -109,7 +114,7 @@ void showRatingDialog(String doctorId, String appointmentId,String doctorEmail,A
             itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
             itemBuilder: (context, _) => const Icon(
               Icons.star,
-              color: Color(0xFF4A78FF), 
+              color: Color(0xFF4A78FF),
             ),
             onRatingUpdate: (rating) {
               _rating = rating.toInt();
@@ -132,10 +137,12 @@ void showRatingDialog(String doctorId, String appointmentId,String doctorEmail,A
             backgroundColor: Color(0xFF4A78FF),
           ),
           onPressed: () async {
-          //   log(doctorEmail.toString());  
-          //  appointmentController.ratingFunction(doctorEmail, _rating);
+            //   log(doctorEmail.toString());
+            await appointmentController.ratingFunction(doctorEmail, _rating);
+            await calculateAvgRating(doctorEmail);
+            Get.back();
           },
-          child: const Text( 
+          child: const Text(
             'Submit',
             style: TextStyle(color: Colors.white),
           ),

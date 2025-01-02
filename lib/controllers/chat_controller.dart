@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/model/chat_model.dart';
 import 'package:get/get.dart';
 
-
 class ChatController extends GetxController {
   final FirebaseFirestore db = FirebaseFirestore.instance;
   List<Map<String, dynamic>> chatRooms = [];
@@ -44,17 +43,11 @@ class ChatController extends GetxController {
     }
   }
 
-  // pickChatRooms(String userUid) async {
-  //   try {
-  //   } catch (e) {
-  //     log(e.toString());   
-  //   }
-  // }
-
-   void updateSearchQuery(String query) {
+  void updateSearchQuery(String query) {
     searchQuery.value = query.toUpperCase();
   }
-  void clearSearch() { 
+
+  void clearSearch() {
     searchQuery.value = '';
   }
 }
