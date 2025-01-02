@@ -18,7 +18,7 @@ class SearchDr extends StatelessWidget {
           onPressed: () => Get.back(),
           icon: const Icon(Icons.keyboard_arrow_down_outlined, size: 40),
         ),
-        title: const Text( 
+        title: const Text(  
           'Search Doctors',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),

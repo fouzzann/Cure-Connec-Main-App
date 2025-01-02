@@ -50,7 +50,7 @@ Widget buildSearchResults() {
           ),
           const SizedBox(height: 16),
           Text(
-            'Search Doctors by Name or Category',
+            'Search Doctors by Name',   
             style: TextStyle(
               fontSize: 18,
               color: Colors.grey[600],

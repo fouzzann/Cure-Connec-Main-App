@@ -45,7 +45,7 @@ Widget buildMessageButton(String uid) {
           transition: Transition.rightToLeftWithFade);
     },
     style: ElevatedButton.styleFrom(
-      backgroundColor: Colors.blue,
+      backgroundColor: Color(0xFF4A78FF),
       padding: const EdgeInsets.symmetric(vertical: 16),
       elevation: 0,
       shape: RoundedRectangleBorder(

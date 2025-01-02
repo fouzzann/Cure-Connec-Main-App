@@ -23,13 +23,13 @@ Widget buildDoctorInfo(UserAppointmentHistoryModel doctor) {
               doctor.doctorModel.category,
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.blue,
+                color: Color(0xFF4A78FF),
                 fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 8),
           ],
-        ),
+        ), 
       ),
     ],
   );

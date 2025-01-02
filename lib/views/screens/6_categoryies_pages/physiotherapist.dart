@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/favorite_controller.dart';
+import 'package:cure_connect_service/views/utils/app_colors/app.theme.dart';
 import 'package:cure_connect_service/widgets/6_categories/physiotherapist/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,8 @@ class Physiotherapist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FavoritesController favoritesController = Get.put(FavoritesController());
+    final FavoritesController favoritesController =
+        Get.put(FavoritesController());
 
     return Scaffold(
       appBar: AppBar(
@@ -50,7 +52,8 @@ class Physiotherapist extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: AppColors.mainTheme));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -62,10 +65,10 @@ class Physiotherapist extends StatelessWidget {
           itemBuilder: (context, index) {
             final doc = snapshot.data!.docs[index];
             return PhysiotherapistDoctorCard(
-              doc: doc, 
+              doc: doc,
               favoritesController: favoritesController,
             );
-          }, 
+          },
         );
       },
     );

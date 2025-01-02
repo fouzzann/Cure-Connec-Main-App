@@ -12,11 +12,12 @@ class Dentist extends StatefulWidget {
 }
 
 class _DentistState extends State<Dentist> {
-  final FavoritesController favoritesController = Get.put(FavoritesController());
+  final FavoritesController favoritesController =
+      Get.put(FavoritesController());
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       appBar: buildAppBar(),
       backgroundColor: const Color(0xFFF5F5F5),
       body: SafeArea(

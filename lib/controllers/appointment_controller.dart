@@ -153,4 +153,14 @@ class AppointmentController extends GetxController {
       return true;
     }
   }
+  // Future<void> ratingFunction (String doctorEmail,int rating)async{
+  //   try {
+  //  final doctor =  await db.collection('doctors').doc(doctorEmail).get();
+  //  List<int> ratingList = doctor.data()?['ratingList']as List<int>;
+  //  ratingList.add(rating);
+  //  await db.collection('doctors').doc().update({'ratingList':ratingList});
+  //   } catch (e) {
+  //     log(e.toString());
+  //   }
+  // } 
 }

@@ -22,8 +22,8 @@ class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F7FB),
-      appBar: AppBar(
+      backgroundColor:  Colors.white,
+      appBar: AppBar( 
         toolbarHeight: 80,
         title: Text(
           'Messages',
@@ -85,7 +85,7 @@ class _MessagePageState extends State<MessagePage> {
                 } else if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(color:  AppColors.mainTheme ),
                   );
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {

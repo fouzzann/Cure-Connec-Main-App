@@ -19,7 +19,7 @@ class Doctor {
     required this.image,
     required this.fullName,
     required this.age,
-    required this.email,
+    required this.email, 
     required this.gender,
     required this.uid,
     required this.category,

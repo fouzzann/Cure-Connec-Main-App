@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:cure_connect_service/api/publisheble_key.dart';
+import 'package:cure_connect_service/model/api/publisheble_key.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 

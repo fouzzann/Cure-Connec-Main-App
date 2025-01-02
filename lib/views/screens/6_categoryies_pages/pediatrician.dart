@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/favorite_controller.dart';
+import 'package:cure_connect_service/views/utils/app_colors/app.theme.dart';
 import 'package:cure_connect_service/widgets/6_categories/pediatrician/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,7 +10,8 @@ class Pediatrician extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final FavoritesController favoritesController = Get.put(FavoritesController());
+    final FavoritesController favoritesController =
+        Get.put(FavoritesController());
 
     return Scaffold(
       appBar: _buildAppBar(),
@@ -58,7 +60,8 @@ class Pediatrician extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CircularProgressIndicator(color: AppColors.mainTheme));
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
