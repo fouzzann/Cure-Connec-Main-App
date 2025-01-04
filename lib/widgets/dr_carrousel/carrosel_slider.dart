@@ -1,18 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/model/doctor_model.dart';
+import 'package:cure_connect_service/views/screens/carrousel/dr_carousel.dart';
 import 'package:cure_connect_service/views/utils/app_colors/app.theme.dart';
-import 'package:cure_connect_service/widgets/home_content/dr_card.dart';
 import 'package:flutter/material.dart';
 
-class DrCarousel extends StatefulWidget {
+class DrCarousel extends StatelessWidget {
   const DrCarousel({super.key});
 
-  @override
-  State<DrCarousel> createState() => _DrCarouselState();
-}
-
-class _DrCarouselState extends State<DrCarousel> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
@@ -68,6 +63,7 @@ class _DrCarouselState extends State<DrCarousel> {
                 rating: double.parse(doctor.rating ?? '0.0'),
                 backgroundImageUrl:
                     'https://media.istockphoto.com/id/1387688781/vector/modern-layer-blue-colorful-abstract-design-background.jpg?s=612x612&w=0&k=20&c=wAKGTuxGlV3ZUAMVKXUpA_Lai89TZkYa059ubw5s-8U=',
+                doctor: doctor,
               );
             }).toList(),
           );

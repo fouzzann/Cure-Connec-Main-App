@@ -34,7 +34,7 @@ class ProfilePage extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 16), 
           Settings(),
           const SizedBox(height: 24),
           Logout(),
