@@ -1,4 +1,3 @@
-
 import 'package:cure_connect_service/controllers/added_favorite_controller.dart';
 import 'package:cure_connect_service/views/screens/booking_pages/dr_profile_view.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,8 @@ class FavoritePage extends GetView<AddedFavoriteController> {
   Widget build(BuildContext context) {
     Get.put(AddedFavoriteController());
 
-    return Scaffold(backgroundColor: Colors.white,
+    return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text(
@@ -21,7 +21,7 @@ class FavoritePage extends GetView<AddedFavoriteController> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        leading: IconButton( 
+        leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Get.back(),
         ),
@@ -32,9 +32,9 @@ class FavoritePage extends GetView<AddedFavoriteController> {
             child: CircularProgressIndicator(
               color: Color(0xFF4A78FF),
             ),
-          ); 
+          );
         }
-  
+
         if (controller.favoriteDoctors.isEmpty) {
           return const Center(
             child: Text(
@@ -56,17 +56,12 @@ class FavoritePage extends GetView<AddedFavoriteController> {
   }
 
   Widget _buildDoctorCard(String doctorId) {
-    return FutureBuilder<DocumentSnapshot?>(
-      future: controller.getDoctorDetails(doctorId),
+    return StreamBuilder<DocumentSnapshot?>(
+      stream: FirebaseFirestore.instance
+          .collection('doctors')
+          .doc(doctorId)
+          .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFF4A78FF),
-            ),
-          );
-        }
-
         if (!snapshot.hasData || !snapshot.data!.exists) {
           return const SizedBox.shrink();
         }
@@ -159,10 +154,9 @@ class FavoritePage extends GetView<AddedFavoriteController> {
                   ElevatedButton(
                     onPressed: () {
                       Get.to(
-                          () => DoctorProfileView(
-                                data: data,
-                              ), 
-                          transition: Transition.rightToLeftWithFade);
+                        () => DoctorProfileView(data: data),
+                        transition: Transition.rightToLeftWithFade,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF4A78FF),
