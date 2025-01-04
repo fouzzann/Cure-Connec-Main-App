@@ -245,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       child: IconButton(
                         onPressed: () async {
                           String messageText =
-                              _messageController.text.trim(); // Trim spaces
+                              _messageController.text.trim();
                           if (messageText.isNotEmpty) {
                             final String chatRoomId =
                                 await chatController.createChat(
@@ -253,7 +253,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             final chatModel = ChatModel(
                               senderId: _auth.currentUser!.uid,
                               resiverId: widget.druid,
-                              message: messageText, // Use the trimmed text
+                              message: messageText, 
                               timestamp: Timestamp.now(),
                             );
                             chatController.sendMessage(chatModel, chatRoomId);
