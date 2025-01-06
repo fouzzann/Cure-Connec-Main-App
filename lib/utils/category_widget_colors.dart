@@ -13,7 +13,7 @@ final List<Color> categoryColors = [
   Colors.green.withOpacity(0.12),
   Colors.red.withOpacity(0.12),
   Colors.blue.withOpacity(0.12),
-  Colors.orange.withOpacity(0.12),
+  Colors.orange.withOpacity(0.12), 
   Colors.yellow.withOpacity(0.12),
   Colors.teal.withOpacity(0.12),
 ];

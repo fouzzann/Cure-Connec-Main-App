@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 class Doctor {
   final String image;
   final String fullName;
@@ -19,7 +16,7 @@ class Doctor {
   final List<String> availableDays;
   List<int>? ratingList;
   String? rating;
-  final int contact; // Added contact field
+  final int contact; 
 
   Doctor({
     required this.image,
@@ -39,7 +36,7 @@ class Doctor {
     required this.availableDays,
     this.ratingList,
     this.rating,
-    required this.contact, // Added contact field in constructor
+    required this.contact, 
   });
 
   Map<String, dynamic> toMap() {
@@ -61,7 +58,7 @@ class Doctor {
       'availableDays': availableDays,
       'ratingList': ratingList,
       'rating': rating,
-      'contact': contact, // Added contact field in map
+      'contact': contact, 
     };
   }
 
