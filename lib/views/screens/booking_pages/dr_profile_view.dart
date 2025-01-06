@@ -1,4 +1,7 @@
 import 'package:cure_connect_service/views/screens/booking_pages/book_appointment_date_and_time.dart.dart';
+import 'package:cure_connect_service/views/widgets/dr_profile_view/profile_header.dart';
+import 'package:cure_connect_service/views/widgets/dr_profile_view/profile_section.dart';
+import 'package:cure_connect_service/views/widgets/dr_profile_view/stat_row.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,120 +30,13 @@ class DoctorProfileView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: NetworkImage(data['image'] ?? ''),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              data['fullName'] ?? 'Unknown',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              data['category'] ?? 'Unknown Category',
-                              style: const TextStyle(
-                                color: Color(0xFF4CAF50),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text.rich(
-                              TextSpan(
-                                text: '${data['hospitalName']} Hospital, ',
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 14,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: '${data['location']}',
-                                    style: const TextStyle(
-                                      color: Color(0xFF4A78FF),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildStat(
-                    icon: Icons.local_hospital,
-                    value: 'Hospital',   
-                    label: 'Work',
-                    iconColor: Color(0xFF4A78FF), 
-                  ),
-                  _buildStat(
-                    icon: Icons.workspace_premium_outlined,
-                    value: "${data['yearsOfExperience']} Years",
-                    label: 'Experience',
-                    iconColor: Color(0xFF4A78FF),
-                  ),
-                  _buildStat(
-                    icon: Icons.star_outlined,
-                    value: data['rating'] ?? '0.0',
-                    label: 'Rating',
-                    iconColor: Color(0xFF4A78FF),
-                  ),
-                  _buildStat(
-                    icon: Icons.security_update_good,
-                    value: 'Verified',
-                    label: 'Profile',
-                    iconColor: Color(0xFF4A78FF),
-                  ),
-                ],
-              ),
-            ),
-            _buildSection(
+            ProfileHeader(data: data),
+            StatRow(data: data),
+            ProfileSection(
               title: "Working Day's",
               content: '${data['availableDays']}',
             ),
-            _buildSection(
+            ProfileSection(
               title: 'Consultation Fee', 
               content: 'Rs:${data['consultationFee']}',
             ),
@@ -179,69 +75,6 @@ class DoctorProfileView extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStat({
-    required IconData icon,
-    required String value,
-    required String label,
-    required Color iconColor,
-  }) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: iconColor, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSection({required String title, required String content}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-              height: 1.5,
-            ),
-          ),
-        ],
       ),
     );
   }
