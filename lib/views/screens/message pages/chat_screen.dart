@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/chat_controller.dart';
 import 'package:cure_connect_service/model/chat_model.dart';
+import 'package:cure_connect_service/utils/app_colors/app.theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart';       
 
 class ChatScreen extends StatefulWidget {
   ChatScreen({super.key, required this.druid});
@@ -23,11 +24,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-      appBar: AppBar(
+      backgroundColor:  Colors.white,
+      appBar: AppBar( 
         actions: [
-          IconButton(
-              onPressed: () {}, icon: Icon(Icons.video_call_rounded, size: 30)),
           IconButton(onPressed: () {}, icon: Icon(Icons.call)),
           SizedBox(width: 20),
         ],
@@ -224,10 +223,16 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: TextField(
                     controller: _messageController,
                     decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide(
+                          color: AppColors.mainTheme,width: 2
+                        ) 
+                      ), 
                       labelText: "Type Message...",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                      ),
+                      ), 
                     ),
                     textCapitalization: TextCapitalization.sentences,
                   ),
@@ -239,7 +244,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     width: 50,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue[600],
+                      color: AppColors.mainTheme
                     ),
                     child: Center(
                       child: IconButton(

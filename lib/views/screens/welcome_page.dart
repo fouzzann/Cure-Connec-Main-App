@@ -1,7 +1,7 @@
 import 'package:cure_connect_service/authentication/login.dart';
 import 'package:cure_connect_service/controllers/welcome_page_controller.dart';
-import 'package:cure_connect_service/widgets/welcome_screen/skip_button.dart';
-import 'package:cure_connect_service/widgets/welcome_screen/welcome_page_content.dart';
+import 'package:cure_connect_service/views/widgets/welcome_screen/skip_button.dart';
+import 'package:cure_connect_service/views/widgets/welcome_screen/welcome_page_content.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

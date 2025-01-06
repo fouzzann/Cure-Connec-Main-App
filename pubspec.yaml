@@ -59,6 +59,8 @@ dependencies:
   agora_rtc_engine: ^6.5.0
   permission_handler: ^11.3.1
   flutter_rating_bar: ^4.0.1
+  flutter_webrtc: ^0.12.5+hotfix.2
+
 
 
 dev_dependencies:

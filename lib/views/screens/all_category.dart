@@ -1,6 +1,6 @@
-import 'package:cure_connect_service/widgets/all_category/dr_list.dart';
-import 'package:cure_connect_service/widgets/all_category/header_app_bar.dart';
-import 'package:cure_connect_service/widgets/all_category/list_view_builder.dart';
+import 'package:cure_connect_service/views/widgets/all_category/dr_list.dart';
+import 'package:cure_connect_service/views/widgets/all_category/header_app_bar.dart';
+import 'package:cure_connect_service/views/widgets/all_category/list_view_builder.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';

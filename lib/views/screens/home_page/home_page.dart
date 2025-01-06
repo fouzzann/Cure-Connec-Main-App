@@ -1,6 +1,6 @@
 import 'package:cure_connect_service/views/screens/home_page/home_contend.dart';
 import 'package:cure_connect_service/views/screens/message%20pages/message_page.dart';
-import 'package:cure_connect_service/views/utils/custom_widgets/bottom_navigation_bar.dart';
+import 'package:cure_connect_service/utils/custom_widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import '../appoiment_page.dart';
 import '../profile page/profile_page.dart';

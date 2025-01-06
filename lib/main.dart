@@ -2,7 +2,7 @@ import 'package:cure_connect_service/controllers/search_controller.dart';
 import 'package:cure_connect_service/firebase_options.dart';
 import 'package:cure_connect_service/model/api/publisheble_key.dart';
 import 'package:cure_connect_service/views/screens/splash_screen.dart';
-import 'package:cure_connect_service/views/utils/app_colors/app.theme.dart';
+import 'package:cure_connect_service/utils/app_colors/app.theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';

@@ -12,10 +12,21 @@ class SearchDrController extends GetxController {
   final RxnString selectedCategory = RxnString();
   Timer? _debounceTimer;
 
+  final RxList<Map<String, dynamic>> feeRanges = <Map<String, dynamic>>[
+    {'min': 100, 'max': 500, 'isSelected': false},
+    {'min': 500, 'max': 1000, 'isSelected': false},
+    {'min': 1000, 'max': 2000, 'isSelected': false},
+    {'min': 2000, 'max': 3000, 'isSelected': false},
+    {'min': 3000, 'max': double.infinity, 'isSelected': false},
+  ].obs;
+
+  bool get hasActiveFeeFilter => feeRanges.any((range) => range['isSelected']);
+
   @override
   void onInit() {
     super.onInit();
     loadCategories();
+    fetchAllDoctors(); // Fetch all doctors on initialization
     restoreSearchState();
     ever(selectedCategory, (_) {
       searchUsers(searchController.text);
@@ -25,8 +36,6 @@ class SearchDrController extends GetxController {
   @override
   void onClose() {
     saveSearchState();
-
-    // Clean up resources
     _debounceTimer?.cancel();
     searchController.dispose();
     users.clear();
@@ -34,16 +43,34 @@ class SearchDrController extends GetxController {
     super.onClose();
   }
 
+  void toggleFeeRange(int index) {
+    for (var range in feeRanges) {
+      range['isSelected'] = false;
+    }
+    feeRanges[index]['isSelected'] = true;
+    searchUsers(searchController.text);
+  }
+
+  void clearFeeFilter() {
+    for (var range in feeRanges) {
+      range['isSelected'] = false;
+    }
+    searchUsers(searchController.text);
+  }
+
   void saveSearchState() {
     final box = GetStorage();
     box.write('searchText', searchController.text);
     box.write('selectedCategory', selectedCategory.value);
+    final activeFeeRange = feeRanges.indexWhere((range) => range['isSelected']);
+    box.write('selectedFeeRange', activeFeeRange);
   }
 
   void restoreSearchState() {
     final box = GetStorage();
     String? savedSearchText = box.read('searchText');
     String? savedCategory = box.read('selectedCategory');
+    int? savedFeeRange = box.read('selectedFeeRange');
 
     if (savedSearchText != null) {
       searchController.text = savedSearchText;
@@ -51,8 +78,11 @@ class SearchDrController extends GetxController {
     if (savedCategory != null) {
       selectedCategory.value = savedCategory;
     }
+    if (savedFeeRange != null && savedFeeRange >= 0 && savedFeeRange < feeRanges.length) {
+      feeRanges[savedFeeRange]['isSelected'] = true;
+    }
 
-    if (savedSearchText != null || savedCategory != null) {
+    if (savedSearchText != null || savedCategory != null || savedFeeRange != null) {
       searchUsers(savedSearchText ?? '');
     }
   }
@@ -69,6 +99,21 @@ class SearchDrController extends GetxController {
     }
   }
 
+  // Fetch all doctors without searching
+  Future<void> fetchAllDoctors() async {
+    isLoading.value = true;
+
+    try {
+      QuerySnapshot doctorSnapshot = await FirebaseFirestore.instance.collection('doctors').get();
+      users.value = doctorSnapshot.docs;
+    } catch (e) {
+      Get.snackbar('Error', 'Error fetching doctors',
+          backgroundColor: Colors.red, colorText: Colors.white);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   void searchUsers(String query) {
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
 
@@ -80,8 +125,8 @@ class SearchDrController extends GetxController {
   void _performSearch(String query) async {
     query = query.trim();
 
-    if (query.isEmpty && selectedCategory.value == null) {
-      users.clear();
+    if (query.isEmpty && selectedCategory.value == null && !hasActiveFeeFilter) {
+      fetchAllDoctors();
       return;
     }
 
@@ -91,21 +136,34 @@ class SearchDrController extends GetxController {
       Query doctorsQuery = FirebaseFirestore.instance.collection('doctors');
 
       if (selectedCategory.value != null) {
-        doctorsQuery =
-            doctorsQuery.where('category', isEqualTo: selectedCategory.value);
+        doctorsQuery = doctorsQuery.where('category', isEqualTo: selectedCategory.value);
+      }
+
+      QuerySnapshot initialResults = await doctorsQuery.get();
+
+      var selectedRange = feeRanges.firstWhereOrNull((range) => range['isSelected']);
+      if (selectedRange != null) {
+        var filteredDocs = initialResults.docs.where((doc) {
+          String feeStr = doc.get('consultationFee') as String;
+          int fee = int.tryParse(feeStr) ?? 0;
+          return fee >= selectedRange['min'] && (selectedRange['max'] == double.infinity || fee < selectedRange['max']);
+        }).toList();
+
+        users.value = filteredDocs;
+      } else {
+        users.value = initialResults.docs;
       }
 
       if (query.isNotEmpty) {
-        String capitalizedQuery =
-            query[0].toUpperCase() + query.substring(1).toLowerCase();
-        doctorsQuery = doctorsQuery
-            .where('fullName', isGreaterThanOrEqualTo: capitalizedQuery)
-            .where('fullName', isLessThan: capitalizedQuery + '\uf8ff');
+        String capitalizedQuery = query[0].toUpperCase() + query.substring(1).toLowerCase();
+        users.value = users.where((doc) {
+          String fullName = doc.get('fullName') as String;
+          return fullName.startsWith(capitalizedQuery);
+        }).toList();
       }
 
-      final userQuery = await doctorsQuery.get();
-      users.value = userQuery.docs;
     } catch (e) {
+      print('Search error: $e');
       Get.snackbar('Error', 'Error searching users',
           backgroundColor: Colors.red, colorText: Colors.white);
     } finally {

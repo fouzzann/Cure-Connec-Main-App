@@ -1,8 +1,8 @@
-import 'package:cure_connect_service/widgets/home_content/top_rated_category_health_care/main_container.dart';
+import 'package:cure_connect_service/views/widgets/home_content/top_rated_category_health_care/main_container.dart';
 import 'package:flutter/material.dart';
-import 'package:cure_connect_service/widgets/home_content/app_bar/search_bar.dart';
-import 'package:cure_connect_service/widgets/home_content/app_bar/user_image.dart';
-import 'package:cure_connect_service/widgets/home_content/app_bar/user_name.dart';
+import 'package:cure_connect_service/views/widgets/home_content/app_bar/search_bar.dart';
+import 'package:cure_connect_service/views/widgets/home_content/app_bar/user_image.dart';
+import 'package:cure_connect_service/views/widgets/home_content/app_bar/user_name.dart';
 
 class HomeContent extends StatelessWidget {
   HomeContent({super.key});

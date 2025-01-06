@@ -1,7 +1,7 @@
 import 'package:cure_connect_service/controllers/appointment_controller.dart';
 import 'package:cure_connect_service/services/empty_appointment_state.dart';
-import 'package:cure_connect_service/widgets/booked_appointment/app_bar_title.dart';
-import 'package:cure_connect_service/widgets/booked_appointment/appointment_card.dart';
+import 'package:cure_connect_service/views/widgets/booked_appointment/app_bar_title.dart';
+import 'package:cure_connect_service/views/widgets/booked_appointment/appointment_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

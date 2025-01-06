@@ -1,5 +1,5 @@
 import 'package:cure_connect_service/controllers/favorite_controller.dart';
-import 'package:cure_connect_service/widgets/6_categories/dentist/dr_card.dart';
+import 'package:cure_connect_service/views/widgets/6_categories/dentist/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+
 class LoginController extends GetxController {
   final RxBool isLoading = false.obs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -40,7 +41,7 @@ class LoginController extends GetxController {
             email: user.email.toString());
         FirebaseFirestore.instance
             .collection('users')
-            .doc(user.email) 
+            .doc(user.email)
             .set(userModel.toMap());
         Get.offAll(() => HomePage(), transition: Transition.fadeIn);
       }
@@ -88,4 +89,23 @@ class LoginController extends GetxController {
       }
     });
   }
+
+  // void onUserLogin() async {
+  //   final user = FirebaseAuth.instance.currentUser;
+
+  //   if (user != null) {
+  //     final String userID = user.uid;
+  //     final String email = user.email ?? 'unknown_email';
+
+  //     ZegoUIKitPrebuiltCallInvitationService().init(
+  //       appID: AppSecrets.apiKey,
+  //       appSign: AppSecrets.apiSecret,
+  //       userID: userID,
+  //       userName: email,
+  //       plugins: [ZegoUIKitSignalingPluginImpl()],
+  //     );
+  //   } else {
+  //     print('No user is currently logged in.');
+  //   }
+  // }
 }

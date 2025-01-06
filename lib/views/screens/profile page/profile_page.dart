@@ -1,6 +1,6 @@
-import 'package:cure_connect_service/widgets/profile_page/header.dart';
-import 'package:cure_connect_service/widgets/profile_page/logout.dart';
-import 'package:cure_connect_service/widgets/profile_page/settings.dart';
+import 'package:cure_connect_service/views/widgets/profile_page/header.dart';
+import 'package:cure_connect_service/views/widgets/profile_page/logout.dart';
+import 'package:cure_connect_service/views/widgets/profile_page/settings.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {

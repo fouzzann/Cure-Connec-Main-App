@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/favorite_controller.dart';
-import 'package:cure_connect_service/views/utils/app_colors/app.theme.dart';
-import 'package:cure_connect_service/widgets/6_categories/neurologist/dr_card.dart';
+import 'package:cure_connect_service/utils/app_colors/app.theme.dart';
+import 'package:cure_connect_service/views/widgets/6_categories/neurologist/dr_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
