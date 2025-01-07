@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cure_connect_service/views/widgets/message_page/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cure_connect_service/controllers/chat_controller.dart';
@@ -11,7 +10,7 @@ class ChatListItem extends StatelessWidget {
   final QueryDocumentSnapshot<Map<String, dynamic>> chatRoom;
   final String lastTime;
   final ChatController chatController;
-
+ 
   const ChatListItem({
     super.key,
     required this.chatRoom,
@@ -21,6 +20,11 @@ class ChatListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Validate drId exists before creating the stream
+    if (chatRoom['drId'] == null) {
+      return const SizedBox.shrink();
+    }
+
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection('doctors')
@@ -29,31 +33,48 @@ class ChatListItem extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));  
+          return const SizedBox.shrink(); // Hide errors gracefully
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
             margin: const EdgeInsets.only(bottom: 12),
-            child: const ListTile(title: Text("Loading...")),
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 25,
+                backgroundColor: Colors.grey[200],
+                child: const CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.mainTheme,
+                ),
+              ),
+              title: Container(
+                width: 100,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
           );
         }
 
+        // Safely handle empty data
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 100), 
-            child: const EmptyChatsView(),
-          );
+          return const SizedBox.shrink();
         }
 
-        final doctorData = snapshot.data?.docs[0];
-        if (doctorData == null) {
-          return const Center(
-            child: Text("Doctor data is unavailable"),
-          );
+        final doctorData = snapshot.data!.docs[0].data();
+        // Validate required fields
+        if (doctorData['contact'] == null || 
+            doctorData['fullName'] == null || 
+            doctorData['image'] == null) {
+          return const SizedBox.shrink();
         }
 
-        String no = doctorData['contact'].toString();
+        final String no = doctorData['contact'].toString();
+        
         return Obx(() {
           if (chatController.searchQuery.isNotEmpty &&
               !doctorData['fullName']
@@ -88,6 +109,9 @@ class ChatListItem extends StatelessWidget {
                 radius: 25,
                 backgroundImage: NetworkImage(doctorData['image']),
                 backgroundColor: Colors.grey[200],
+                onBackgroundImageError: (_, __) {
+                  // Handle image load errors silently
+                },
               ),
               title: Text(
                 doctorData['fullName'],
@@ -98,7 +122,7 @@ class ChatListItem extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                chatRoom['lastMessage'],
+                chatRoom['lastMessage'] ?? '',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -120,4 +144,5 @@ class ChatListItem extends StatelessWidget {
       },
     );
   }
-} 
+}
+
