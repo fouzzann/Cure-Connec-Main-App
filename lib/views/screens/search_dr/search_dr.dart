@@ -9,8 +9,10 @@ import 'package:get/get.dart';
 class SearchDr extends StatelessWidget {
   final SearchDrController controller = Get.find<SearchDrController>();
 
+  // Constructor for SearchDr
   SearchDr({super.key});
 
+  // Method to show the fee range filter dialog
   void _showFeeRangeDialog() {
     Get.dialog(
       Dialog(
@@ -39,7 +41,10 @@ class SearchDr extends StatelessWidget {
       ),
       body: Column(
         children: [
+          // Display category filter
           Obx(() => buildCategoryFilter(controller)),
+
+          // Search input and filter button
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -73,47 +78,48 @@ class SearchDr extends StatelessWidget {
                                   controller.fetchAllDoctors();
                                 },
                               ),
+                            // Filter button for fee range
                             Obx(() => TextButton(
-                                  onPressed: _showFeeRangeDialog,
-                                  style: TextButton.styleFrom(
-                                    side: const BorderSide(
-                                        color: AppColors.mainTheme, width: 1.5),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                              onPressed: _showFeeRangeDialog,
+                              style: TextButton.styleFrom(
+                                side: const BorderSide(
+                                    color: AppColors.mainTheme, width: 1.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  const Text(
+                                    'FILTER ₹',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w500,
+                                      color: AppColors.mainTheme,
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
                                   ),
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      const Text(
-                                        'FILTER ₹',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
+                                  if (controller.hasActiveFeeFilter)
+                                    Positioned(
+                                      right: -8,
+                                      top: -8,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(2),
+                                        decoration: const BoxDecoration(
                                           color: AppColors.mainTheme,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 5,
+                                          minHeight: 5,
                                         ),
                                       ),
-                                      if (controller.hasActiveFeeFilter)
-                                        Positioned(
-                                          right: -8,
-                                          top: -8,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(2),
-                                            decoration: const BoxDecoration(
-                                              color: AppColors.mainTheme,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            constraints: const BoxConstraints(
-                                              minWidth: 5,
-                                              minHeight: 5,
-                                            ),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                ))
+                                    ),
+                                ],
+                              ),
+                            )),
                           ],
                         ),
                         border: InputBorder.none,
@@ -129,21 +135,27 @@ class SearchDr extends StatelessWidget {
               ],
             ),
           ),
+
+          // Display search results or loading indicator
           Expanded(child: Obx(() => buildSearchResults())),
         ],
       ),
     );
   }
 
+  // Method to build the list of search results
   Widget buildSearchResults() {
+    // Show loading indicator while fetching data
     if (controller.isLoading.value) {
       return const Center(child: CircularProgressIndicator());
     }
 
+    // Show a message if no doctors are found
     if (controller.users.isEmpty) {
       return const Center(child: Text('No doctors available'));
     }
 
+    // List of doctor cards for each search result
     return ListView.builder(
       itemCount: controller.users.length,
       itemBuilder: (context, index) {
@@ -167,6 +179,7 @@ class SearchDr extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Display doctor's image
                 ClipOval(
                   child: Image.network(
                     imageUrl,
@@ -180,15 +193,17 @@ class SearchDr extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Display doctor's name
                       Text(
                         fullName,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                       const SizedBox(height: 4),
-                      Text(category,style: TextStyle(
-                        color: AppColors.mainTheme
-                      ),),
+                      Text(
+                        category,
+                        style: TextStyle(color: AppColors.mainTheme),
+                      ),
                       const SizedBox(height: 8),
                       Row(
                         children: [
@@ -205,21 +220,21 @@ class SearchDr extends StatelessWidget {
                             size: 16,
                           ),
                           Text(location),
-                          
                         ],
                       ),
-                      Text('${yearsOfExperience} Years of experience') 
+                      Text('$yearsOfExperience Years of experience'),
                     ],
                   ),
                 ),
+                // Connect button to view doctor's profile
                 ElevatedButton(
                   onPressed: () {
                     Get.to(
-                    () => DoctorProfileView(
-                      data: doctor,  
-                    ),
-                    transition: Transition.rightToLeftWithFade,
-                  );
+                      () => DoctorProfileView(
+                        data: doctor.data(),  // Pass the doctor's data here
+                      ),
+                      transition: Transition.rightToLeftWithFade,
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.mainTheme,
@@ -245,3 +260,4 @@ class SearchDr extends StatelessWidget {
     );
   }
 }
+
