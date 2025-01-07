@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cure_connect_service/controllers/chat_controller.dart';
 import 'package:cure_connect_service/model/chat_model.dart';
@@ -5,11 +6,13 @@ import 'package:cure_connect_service/utils/app_colors/app.theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';       
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen({super.key, required this.druid});
+  ChatScreen({super.key, required this.druid, required this.phoneNumber});
   final String druid;
+  final String phoneNumber;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -20,14 +23,50 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatController chatController = Get.put(ChatController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ScrollController _scrollController = ScrollController();
+  Future<void> _launchDialer(String phoneNumber) async {
+    // Format the phone number to ensure it's properly encoded
+    final formattedNumber = phoneNumber.replaceAll(RegExp(r'[^\d+]'), '');
+    final Uri url = Uri(
+      scheme: 'tel',
+      path: formattedNumber,
+    );
+
+    try {
+      if (!await launchUrl(url)) {
+        throw 'Could not launch dialer';
+      }
+    } catch (e) {
+      // Show error dialog to user
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text('Could not launch phone dialer: ${e.toString()}'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+      log('Error launching dialer: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  Colors.white,
-      appBar: AppBar( 
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.call)),
+          IconButton(
+              onPressed: () async {
+                _launchDialer('+91${widget.phoneNumber}');
+              },
+              icon: Icon(Icons.call)),
           SizedBox(width: 20),
         ],
         backgroundColor: Colors.white,
@@ -224,15 +263,13 @@ class _ChatScreenState extends State<ChatScreen> {
                     controller: _messageController,
                     decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: AppColors.mainTheme,width: 2
-                        ) 
-                      ), 
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide:
+                              BorderSide(color: AppColors.mainTheme, width: 2)),
                       labelText: "Type Message...",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
-                      ), 
+                      ),
                     ),
                     textCapitalization: TextCapitalization.sentences,
                   ),
@@ -243,14 +280,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 50,
                     width: 50,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.mainTheme
-                    ),
+                        shape: BoxShape.circle, color: AppColors.mainTheme),
                     child: Center(
                       child: IconButton(
                         onPressed: () async {
-                          String messageText =
-                              _messageController.text.trim();
+                          String messageText = _messageController.text.trim();
                           if (messageText.isNotEmpty) {
                             final String chatRoomId =
                                 await chatController.createChat(
@@ -258,7 +292,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             final chatModel = ChatModel(
                               senderId: _auth.currentUser!.uid,
                               resiverId: widget.druid,
-                              message: messageText, 
+                              message: messageText,
                               timestamp: Timestamp.now(),
                             );
                             chatController.sendMessage(chatModel, chatRoomId);

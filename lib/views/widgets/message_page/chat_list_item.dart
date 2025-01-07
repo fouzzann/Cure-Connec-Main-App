@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cure_connect_service/views/widgets/message_page/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cure_connect_service/controllers/chat_controller.dart';
 import 'package:cure_connect_service/views/screens/message%20pages/chat_screen.dart';
 import 'package:cure_connect_service/utils/app_colors/app.theme.dart';
+
 
 class ChatListItem extends StatelessWidget {
   final QueryDocumentSnapshot<Map<String, dynamic>> chatRoom;
@@ -27,7 +29,7 @@ class ChatListItem extends StatelessWidget {
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
+          return Center(child: Text(snapshot.error.toString()));  
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -37,11 +39,23 @@ class ChatListItem extends StatelessWidget {
           );
         }
 
-        final doctorData = snapshot.data?.docs[0];
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 100), 
+            child: const EmptyChatsView(),
+          );
+        }
 
+        final doctorData = snapshot.data?.docs[0];
+        if (doctorData == null) {
+          return const Center(
+            child: Text("Doctor data is unavailable"),
+          );
+        }
+
+        String no = doctorData['contact'].toString();
         return Obx(() {
           if (chatController.searchQuery.isNotEmpty &&
-              doctorData != null &&
               !doctorData['fullName']
                   .toString()
                   .toUpperCase()
@@ -66,19 +80,17 @@ class ChatListItem extends StatelessWidget {
             child: ListTile(
               onTap: () {
                 Get.to(
-                  () => ChatScreen(druid: chatRoom['drId']),
+                  () => ChatScreen(druid: chatRoom['drId'], phoneNumber: no),
                   transition: Transition.rightToLeftWithFade,
                 );
               },
               leading: CircleAvatar(
                 radius: 25,
-                backgroundImage: NetworkImage(
-                  doctorData != null ? doctorData['image'] : '',
-                ),
+                backgroundImage: NetworkImage(doctorData['image']),
                 backgroundColor: Colors.grey[200],
               ),
               title: Text(
-                doctorData != null ? doctorData['fullName'] : 'Doctor',
+                doctorData['fullName'],
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -108,4 +120,4 @@ class ChatListItem extends StatelessWidget {
       },
     );
   }
-}
+} 

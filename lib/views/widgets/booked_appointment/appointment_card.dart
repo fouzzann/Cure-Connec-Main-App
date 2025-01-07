@@ -48,7 +48,7 @@ Widget buildAppointmentCard(UserAppointmentHistoryModel doctor,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: buildMessageButton(doctor.doctorModel.uid),
+                    child: buildMessageButton(doctor.doctorModel.uid,doctor.doctorModel.contact.toString()),
                   ),
                 ],
               ),

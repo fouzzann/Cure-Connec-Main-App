@@ -35,12 +35,13 @@ Widget buildCancelButton(
   );
 }
 
-Widget buildMessageButton(String uid) {
+Widget buildMessageButton(String uid,String phoneNumber) {
   return ElevatedButton(
     onPressed: () {
       Get.to(
           () => ChatScreen(
                 druid: uid,
+                phoneNumber: phoneNumber,
               ),
           transition: Transition.rightToLeftWithFade);
     },
