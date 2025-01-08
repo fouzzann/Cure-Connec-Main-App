@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Settings extends StatelessWidget {
-  const Settings({super.key});
+class Options extends StatelessWidget {
+  const Options({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class Settings extends StatelessWidget {
               },
             );
             await launchUrl(emailLaunchUri);
-          },
+          }, 
           child: _buildSettingsItem(
             icon: Icons.feedback_outlined,
             title: 'Send Feedback',

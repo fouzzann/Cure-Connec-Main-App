@@ -38,11 +38,7 @@ class ChatListItem extends StatelessWidget {
         }
         
         final doctorData = snapshot.data?.docs[0];
-        if(doctorData!.exists){
-          return Center(
-            child: Text('no data'),
-          );
-        }
+       
         String? no=doctorData?['contact'].toString();
         return Obx(() {
           if (chatController.searchQuery.isNotEmpty &&

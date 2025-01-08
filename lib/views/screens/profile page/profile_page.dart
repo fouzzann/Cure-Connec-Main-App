@@ -1,6 +1,6 @@
 import 'package:cure_connect_service/views/widgets/profile_page/header.dart';
 import 'package:cure_connect_service/views/widgets/profile_page/logout.dart';
-import 'package:cure_connect_service/views/widgets/profile_page/settings.dart';
+import 'package:cure_connect_service/views/widgets/profile_page/options.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -35,7 +35,7 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16), 
-          Settings(),
+          Options(),
           const SizedBox(height: 24),
           Logout(),
           const SizedBox(height: 16),
