@@ -13,24 +13,32 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  final ChatController chatController = Get.put(ChatController());
+  late final ChatController chatController;
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    chatController = Get.put(ChatController());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const CustomMessageAppBar(),
-      body: Column(
-        children: [
-          SearchContainer(
-            searchController: _searchController,
-            onSearchChanged: (value) {
-              chatController.updateSearchQuery(value);
-            },
-          ),
-          ChatListView(chatController: chatController),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            SearchContainer(
+              searchController: _searchController,
+              onSearchChanged: (value) {
+                chatController.updateSearchQuery(value);
+              },
+            ),
+            ChatListView(chatController: chatController),
+          ],
+        ),
       ),
     );
   }
