@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
-class TopRatedDoctors extends StatelessWidget {
-  TopRatedDoctors({super.key});
+class SeeAllTopRatedDoctors extends StatelessWidget {
+  SeeAllTopRatedDoctors({super.key});
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

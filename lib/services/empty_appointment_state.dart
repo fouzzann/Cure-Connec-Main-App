@@ -1,4 +1,4 @@
-import 'package:cure_connect_service/views/screens/all_category.dart';
+import 'package:cure_connect_service/views/screens/see_all_options/see_all_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +54,7 @@ class EmptyAppointmentState extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(  
                 onPressed: (){
-                  Get.to(()=> AllCategoryPage());
+                  Get.to(()=> SeeAllCategoryPage());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor:  Color(0xFF4A78FF),

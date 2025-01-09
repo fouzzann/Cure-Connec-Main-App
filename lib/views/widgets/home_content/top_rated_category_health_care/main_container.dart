@@ -37,7 +37,9 @@ class MainContainer extends StatelessWidget {
               ],
             ),
             SizedBox(height: 30),
+          
             DrCarousel(),
+            
             Padding(
               padding: const EdgeInsets.only(top: 25),
               child: Column(

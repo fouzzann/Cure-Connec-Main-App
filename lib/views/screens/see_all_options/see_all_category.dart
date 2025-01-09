@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-class AllCategoryPage extends StatelessWidget {
-  AllCategoryPage({super.key});
+class SeeAllCategoryPage extends StatelessWidget {
+  SeeAllCategoryPage({super.key}); 
 
   @override
   Widget build(BuildContext context) {

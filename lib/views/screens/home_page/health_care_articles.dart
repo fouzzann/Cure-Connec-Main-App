@@ -1,5 +1,7 @@
+import 'package:cure_connect_service/views/screens/see_all_options/see_all_health_care_article_option.dart';
 import 'package:cure_connect_service/views/widgets/health_care_articles_contant_and_widgets/health_article_home_page_section/health_news_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class HealthCareArticles extends StatelessWidget {
   @override
@@ -20,7 +22,10 @@ class HealthCareArticles extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(() => SeeAllHealthArticles(),
+                    transition: Transition.rightToLeftWithFade);
+              },
               child: Text(
                 'See All',
                 style: TextStyle(

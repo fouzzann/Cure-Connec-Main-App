@@ -26,7 +26,7 @@ class SearchContainer extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(18.0),
         child: SearchBar(
-          backgroundColor:  MaterialStatePropertyAll(Colors.white),
+          backgroundColor:  WidgetStatePropertyAll(Colors.white),
           leading: const Icon(Icons.search, color: Colors.grey),
           hintText: 'Search....',
           controller: searchController,

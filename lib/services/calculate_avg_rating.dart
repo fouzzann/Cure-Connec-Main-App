@@ -18,7 +18,7 @@ calculateAvgRating(drEmail) async {
     double avg = sum / ratingList.length;
     return avg;
   } catch (e) {
-    log(e.toString());
+    log('avg :$e');
     return 0.0;
   }
 }

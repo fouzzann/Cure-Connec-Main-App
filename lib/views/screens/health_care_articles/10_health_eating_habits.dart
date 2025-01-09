@@ -4,8 +4,8 @@ import 'package:cure_connect_service/views/widgets/health_care_articles_contant_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class HealthyEatingHabitsPage extends StatelessWidget {
-  const HealthyEatingHabitsPage({super.key});
+class TenHealthyEatingHabitsPage extends StatelessWidget {
+  const TenHealthyEatingHabitsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

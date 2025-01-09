@@ -1,15 +1,16 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
+// Controller
 class SearchDrController extends GetxController {
   final TextEditingController searchController = TextEditingController();
   final RxList<DocumentSnapshot> users = <DocumentSnapshot>[].obs;
   final RxList<String> categories = <String>[].obs;
   final RxBool isLoading = false.obs;
-  final RxnString selectedCategory = RxnString();
+  final Rx<String?> selectedCategory = Rx<String?>(null);
   Timer? _debounceTimer;
 
   final RxList<Map<String, dynamic>> feeRanges = <Map<String, dynamic>>[
@@ -26,7 +27,7 @@ class SearchDrController extends GetxController {
   void onInit() {
     super.onInit();
     loadCategories();
-    fetchAllDoctors(); // Fetch all doctors on initialization
+    fetchAllDoctors();
     restoreSearchState();
     ever(selectedCategory, (_) {
       searchUsers(searchController.text);

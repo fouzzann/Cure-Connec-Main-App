@@ -159,7 +159,7 @@ class AppointmentController extends GetxController {
         final doctor = await db.collection('doctors').doc(doctorEmail).get();
         log(doctor.exists.toString());
         List<dynamic> dynamicList =
-            doctor.data()?['ratingList'] as List<dynamic>;
+            doctor.data()?['ratingList'] ?? [] ; 
         List<int> ratingList = dynamicList.map((e) => e as int).toList();
 
         ratingList.add(rating);
@@ -176,8 +176,8 @@ class AppointmentController extends GetxController {
             .doc(doctorEmail)
             .update({'rating': avgRating}); 
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e) { 
+      log('rating:$e');
     }
   }
 }
