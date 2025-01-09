@@ -118,8 +118,8 @@ class SearchDrController extends GetxController {
   void searchUsers(String query) {
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
 
-    _debounceTimer = Timer(const Duration(milliseconds: 800), () { 
-      _performSearch(query);
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {  
+      _performSearch(query); 
     });
   }
 

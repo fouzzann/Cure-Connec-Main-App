@@ -51,15 +51,13 @@ class SearchPageDoctorCard extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-        const SizedBox(height: 4),
-        // Rating under Category
-        if (data['rating'] != null)
+         SizedBox(height: 4),
           Row(
-            children: [
+            children: [ 
               Icon(Icons.star, size: 20, color: Colors.amber.shade600),
-              const SizedBox(width: 4),
+               SizedBox(width: 4),
               Text(
-                '${data['rating']?.toString() ?? '0.0'}',
+                '${data['rating']?.toString() ?? '0.0'}',    
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -67,8 +65,7 @@ class SearchPageDoctorCard extends StatelessWidget {
               ),
             ],
           ),
-        const SizedBox(height: 4),
-        // Hospital Name with Icon
+         SizedBox(height: 4),
         Row(
           children: [
             Icon(Icons.local_hospital, size: 16, color: Colors.grey.shade600),
