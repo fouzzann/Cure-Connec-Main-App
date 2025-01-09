@@ -70,7 +70,7 @@ class _NephrologistState extends State<Nephrologist> {
         }
 
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No Nephrologists found'));
+          return _buildEmptyState(context);
         }
 
         return ListView.builder(
@@ -86,4 +86,47 @@ class _NephrologistState extends State<Nephrologist> {
       },
     );
   }
+}
+
+Widget _buildEmptyState(BuildContext context) {
+  return Center(
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.mainTheme.withOpacity(0.1),
+            ),
+            child: Icon(
+              Icons.person_off_sharp,
+              size: 40,
+              color: AppColors.mainTheme,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'No Nephrologists found',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            "Please check back later for updates. Thank you for your patience, and feel free to reach out if you need assistance in the meantime.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 15,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+        ],
+      ),
+    ),
+  ); 
 }
