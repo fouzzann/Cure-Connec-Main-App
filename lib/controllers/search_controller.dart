@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
 
-// Controller
 class SearchDrController extends GetxController {
   final TextEditingController searchController = TextEditingController();
   final RxList<DocumentSnapshot> users = <DocumentSnapshot>[].obs;
@@ -115,10 +114,11 @@ class SearchDrController extends GetxController {
     }
   }
 
+  // Search for users with debouncing
   void searchUsers(String query) {
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
 
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 800), () { 
       _performSearch(query);
     });
   }
@@ -136,14 +136,17 @@ class SearchDrController extends GetxController {
     try {
       Query doctorsQuery = FirebaseFirestore.instance.collection('doctors');
 
+      // Apply category filter if selected
       if (selectedCategory.value != null) {
         doctorsQuery = doctorsQuery.where('category', isEqualTo: selectedCategory.value);
       }
 
+      // Fetch the doctors query snapshot
       QuerySnapshot initialResults = await doctorsQuery.get();
 
       var selectedRange = feeRanges.firstWhereOrNull((range) => range['isSelected']);
       if (selectedRange != null) {
+        // Filter doctors based on fee range
         var filteredDocs = initialResults.docs.where((doc) {
           String feeStr = doc.get('consultationFee') as String;
           int fee = int.tryParse(feeStr) ?? 0;
@@ -155,6 +158,7 @@ class SearchDrController extends GetxController {
         users.value = initialResults.docs;
       }
 
+      // Perform search based on query
       if (query.isNotEmpty) {
         String capitalizedQuery = query[0].toUpperCase() + query.substring(1).toLowerCase();
         users.value = users.where((doc) {
