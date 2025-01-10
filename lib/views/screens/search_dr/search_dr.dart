@@ -15,7 +15,7 @@ class SearchDr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 248, 248, 248),
       appBar: _buildAppBar(),
       body: Column(
         children: [
@@ -32,7 +32,7 @@ class SearchDr extends StatelessWidget {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
+       backgroundColor: const Color.fromARGB(255, 248, 248, 248),
       leading: IconButton(
         onPressed: () => Get.back(),
         icon: const Icon(Icons.keyboard_arrow_down_outlined, size: 40),

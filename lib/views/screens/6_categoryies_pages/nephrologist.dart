@@ -110,7 +110,7 @@ Widget _buildEmptyState(BuildContext context) {
           const SizedBox(height: 24),
           Text(
             'No Nephrologists found',
-            style: TextStyle(
+            style: TextStyle( 
               fontSize: 20,
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.onSurface,

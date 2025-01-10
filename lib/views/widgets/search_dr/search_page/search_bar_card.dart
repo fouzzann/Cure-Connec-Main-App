@@ -18,7 +18,7 @@ class SearchPageDoctorCard extends StatelessWidget {
 
     return Card(
       color: Colors.white,
-      elevation: 4,
+      elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -120,3 +120,5 @@ class SearchPageDoctorCard extends StatelessWidget {
     );
   }
 }
+
+

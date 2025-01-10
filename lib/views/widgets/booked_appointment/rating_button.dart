@@ -2,6 +2,7 @@ import 'package:cure_connect_service/controllers/appointment_controller.dart';
 import 'package:cure_connect_service/views/widgets/booked_appointment/appointment_card.dart';
 import 'package:cure_connect_service/views/widgets/booked_appointment/show_diolog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class AppointmentRatingButton extends StatefulWidget {
@@ -19,7 +20,8 @@ class AppointmentRatingButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AppointmentRatingButton> createState() => _AppointmentRatingButtonState();
+  State<AppointmentRatingButton> createState() =>
+      _AppointmentRatingButtonState();
 }
 
 class _AppointmentRatingButtonState extends State<AppointmentRatingButton> {
@@ -28,7 +30,8 @@ class _AppointmentRatingButtonState extends State<AppointmentRatingButton> {
   @override
   void initState() {
     super.initState();
-    _initializeFuture = ratingController.initializeRatingStatus(widget.appointmentId);
+    _initializeFuture =
+        ratingController.initializeRatingStatus(widget.appointmentId);
   }
 
   @override
@@ -47,26 +50,48 @@ class _AppointmentRatingButtonState extends State<AppointmentRatingButton> {
         }
 
         return Obx(() => ratingController.isRated(widget.appointmentId)
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(12),
+            ? ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text( 
-                  'Rated',    
-                  style: TextStyle(color: Colors.black54),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Already Rated'), 
+                    action: SnackBarAction( 
+                        label: 'clear',
+                         textColor: Colors.white, 
+                        onPressed: () {
+                          Get.back();
+                        }),
+                  ));
+                },
+                child: Row(
+                  children: [
+                    const Text(
+                      'Rated',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      Icons.star,
+                      color: Colors.white,
+                      size: 15,
+                    )
+                  ],
                 ),
-              ) 
-            : buildRatingButton(
-                widget.doctorId,
-                widget.appointmentId,
-                widget.doctorEmail,
-                widget.appointmentController));
+              )
+            : buildRatingButton(widget.doctorId, widget.appointmentId,
+                widget.doctorEmail, widget.appointmentController));
       },
     );
   }
 }
+
 Widget buildRatingButton(String doctorId, String appointmentId,
     String doctorEmail, AppointmentController appointmentController) {
   return ElevatedButton(
@@ -80,9 +105,21 @@ Widget buildRatingButton(String doctorId, String appointmentId,
       showRatingDialog(
           doctorId, appointmentId, doctorEmail, appointmentController);
     },
-    child: const Text(
-      'Rate',
-      style: TextStyle(color: Colors.white),
+    child: Row(
+      children: [
+        const Text(
+          'Rate',
+          style: TextStyle(color: Colors.white),
+        ),
+        SizedBox(
+          width: 5,
+        ),
+        Icon(
+          Icons.star,
+          color: Colors.white,
+          size: 15,
+        )
+      ],
     ),
   );
 }
