@@ -64,7 +64,7 @@ class Logout extends StatelessWidget {
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout),
+            Icon(Icons.logout,color: Colors.red,),
             SizedBox(width: 8),
             Text(
               'Log Out',
