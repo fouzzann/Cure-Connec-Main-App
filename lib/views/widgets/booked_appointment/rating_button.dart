@@ -3,7 +3,6 @@ import 'package:cure_connect_service/views/widgets/booked_appointment/appointmen
 import 'package:cure_connect_service/views/widgets/booked_appointment/show_diolog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 
 class AppointmentRatingButton extends StatefulWidget {
   final String appointmentId;
